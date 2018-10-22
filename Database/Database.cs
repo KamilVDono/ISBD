@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Text;
+using ISBD.Utils;
 
 namespace ISBD.Database
 {
-	class Database
+	class Database: Singleton<Database>
 	{
 		private string Path
 		{
@@ -19,8 +20,6 @@ namespace ISBD.Database
 		private string _path = "Databse\\Database.sqlite";
 
 		private SQLiteConnection _connection;
-		private SQLiteCommand sqlite_cmd;
-		private SQLiteDataReader sqlite_datareader;
 
 		public void Connect()
 		{
