@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using ISBD.Database;
 
 namespace ISBD.Model
@@ -21,7 +17,6 @@ namespace ISBD.Model
 			{
 				var list = new List<NameValuePair>()
 				{
-					new NameValuePair("IdK", IdK.ToString()),
 					new NameValuePair("Nazwa", Nazwa),
 					new NameValuePair("Rodzaj", Rodzaj.ToString()),
 				};
@@ -29,7 +24,7 @@ namespace ISBD.Model
 				{
 					list.Add(new NameValuePair("IdKRodzic", IdKRodzic.ToString()));
 				}
-				list.Add(new NameValuePair("IdS", IdS));
+				list.Add(new NameValuePair("IdS", IdS.ToString()));
 				return list;
 			}
 		}
