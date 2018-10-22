@@ -73,7 +73,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\DataAccess.cs" />
+    <Compile Include="Model\KategoriaModel.cs" />
     <Compile Include="Model\OsobaModel.cs" />
+    <Compile Include="Model\SymbolModel.cs" />
+    <Compile Include="Model\TransakcjaModel.cs" />
+    <Compile Include="Model\UprawnienieModel.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
