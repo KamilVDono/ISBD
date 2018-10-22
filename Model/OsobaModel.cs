@@ -9,7 +9,7 @@ namespace ISBD.Model
 {
 	class OsobaModel
 	{
-		public Int64 IdO { get; set; }
+		public long IdO { get; set; }
 		public string Login { get; set; }
 		public string Haslo { get; set; }
 		public string Imie { get; set; }

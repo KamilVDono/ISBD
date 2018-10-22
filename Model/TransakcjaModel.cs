@@ -8,12 +8,12 @@ namespace ISBD.Model
 {
 	class TransakcjaModel
 	{
-		public Int64 IdT { get; set; }
-		public Double Kwota { get; set; }
-		public String Tytul { get; set; }
-		public String Opis { get; set; }
-		public String Data { get; set; }
-		public Int64 IdO { get; set; }
-		public Int64 IdK { get; set; }
+		public long IdT { get; set; }
+		public double Kwota { get; set; }
+		public string Tytul { get; set; }
+		public string Opis { get; set; }
+		public string Data { get; set; }
+		public long IdO { get; set; }
+		public long IdK { get; set; }
 	}
 }

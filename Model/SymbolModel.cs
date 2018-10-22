@@ -8,8 +8,8 @@ namespace ISBD.Model
 {
 	class SymbolModel
 	{
-		public Int64 IdS { get; set; }
-		public Int64 Kolor { get; set; }
-		public String Ikona { get; set; }
+		public long IdS { get; set; }
+		public long Kolor { get; set; }
+		public string Ikona { get; set; }
 	}
 }

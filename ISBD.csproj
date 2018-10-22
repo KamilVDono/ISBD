@@ -73,10 +73,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Database\Database.cs" />
+    <Compile Include="Database\NameValuePair.cs" />
     <Compile Include="Model\DataAccess.cs" />
+    <Compile Include="Database\IDBInsertable.cs" />
     <Compile Include="Model\KategoriaModel.cs" />
     <Compile Include="Model\OsobaModel.cs" />
     <Compile Include="Model\SymbolModel.cs" />
+    <Compile Include="Model\Tests\QueryTest.cs" />
     <Compile Include="Model\TransakcjaModel.cs" />
     <Compile Include="Model\UprawnienieModel.cs" />
     <Compile Include="View\MainWindow.xaml.cs">

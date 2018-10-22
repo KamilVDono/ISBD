@@ -8,9 +8,9 @@ namespace ISBD.Model
 {
 	class UprawnienieModel
 	{
-		public Int64 IdU { get; set; }
-		public Int64 Poziom { get; set; }
-		public Int64 IdOBene { get; set; }
-		public Int64 IdOD { get; set; }
+		public long IdU { get; set; }
+		public long Poziom { get; set; }
+		public long IdOBene { get; set; }
+		public long IdOD { get; set; }
 	}
 }
