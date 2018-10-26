@@ -83,6 +83,7 @@
     <Compile Include="Model\Tests\QueryTest.cs" />
     <Compile Include="Model\TransakcjaModel.cs" />
     <Compile Include="Model\UprawnienieModel.cs" />
+    <Compile Include="Utils\ColorConverter.cs" />
     <Compile Include="Utils\Singleton.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
