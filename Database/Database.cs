@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.SQLite;
 using System.Text;
 using ISBD.Utils;
 
 namespace ISBD.Database
 {
-	class Database: Singleton<Database>
+	public class Database: Singleton<Database>, IDisposable
 	{
 		private string Path
 		{
@@ -17,13 +18,13 @@ namespace ISBD.Database
 				this.Connect();
 			}
 		}
-		private string _path = "Databse\\Database.sqlite";
+		private string _path = "Database\\Database.sqlite";
 
 		private SQLiteConnection _connection;
 
 		public void Connect()
 		{
-			_connection = new SQLiteConnection($"Data Source={Path};Version=3;");
+			_connection = new SQLiteConnection($"Data Source={/*AppDomain.CurrentDomain.BaseDirectory+*/Path};Version=3;");
 			_connection.Open();
 		}
 		public void Connect(string path)
@@ -36,14 +37,23 @@ namespace ISBD.Database
 			_connection?.Close();
 		}
 
-		public SQLiteDataReader Select(string table)
+		public List<T> SelectAll<T>() where T : IDBTableItem, IDBSelectable, new()
 		{
-			var command = _connection.CreateCommand();
-			command.CommandText = $"SELECT * FROM {table};";
-			return command.ExecuteReader();
+			T item = new T();
+			List<T> returnList = new List<T>();
+
+			var reader = SelectAll(item.Table);
+			while (reader.Read())
+			{
+				if (!item.Init(reader)) continue;
+				returnList.Add(item);
+				item = new T();
+			}
+
+			return returnList;
 		}
 
-		public void Insert(IDBInsertable insertable)
+		public void Insert<T>(T insertable) where T: IDBTableItem, IDBInsertable
 		{
 			var command = _connection.CreateCommand();
 			command.CommandText = $"INSERT INTO {insertable.Table} {GetInsertSQL(insertable)};";
@@ -57,7 +67,7 @@ namespace ISBD.Database
 			IList<NameValuePair> namedValuePairs = insertable.NamedValues;
 			for (int i = 0; i < namedValuePairs.Count; i++)
 			{
-				if (i == 0)
+				if (i != 0)
 				{
 					names.Append(", ");
 					values.Append(", ");
@@ -70,6 +80,18 @@ namespace ISBD.Database
 			names.Append(")");
 			values.Append(")");
 			return $"{names.ToString()} VALUES {values.ToString()}";
+		}
+
+		private SQLiteDataReader SelectAll(string table)
+		{
+			var command = _connection.CreateCommand();
+			command.CommandText = $"SELECT * FROM {table};";
+			return command.ExecuteReader();
+		}
+
+		public void Dispose()
+		{
+			Close();
 		}
 	}
 }
