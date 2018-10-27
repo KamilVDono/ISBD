@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ISBD.Utils
 {
-	class Singleton<T> where T : class , new()
+	public class Singleton<T> where T : class , new()
 	{
 		private static T _instance = null;
 		static readonly object _padlock = new object();

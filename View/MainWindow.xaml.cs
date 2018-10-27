@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ISBD.Model.Tests;
 
 namespace ISBD
 {
@@ -23,6 +24,8 @@ namespace ISBD
 		public MainWindow()
 		{
 			InitializeComponent();
+
+			new QueryTest();
 		}
 	}
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ISBD.Database
 {
-	class NameValuePair
+	public class NameValuePair
 	{
 		public string Name { get; set; }
 		public string Value { get; set; }
@@ -17,6 +17,12 @@ namespace ISBD.Database
 		{
 			Name = name;
 			Value = value;
+		}
+
+		public NameValuePair AddQuotes()
+		{
+			Value = $"'{Value}'";
+			return this;
 		}
 	}
 }
