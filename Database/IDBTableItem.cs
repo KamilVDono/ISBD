@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ISBD.Database
 {
-	public interface IDBInsertable
+	public interface IDBTableItem
 	{
-		IList<NameValuePair> NamedValues { get; }
+		string Table { get; }
 	}
 }

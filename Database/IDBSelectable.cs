@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ISBD.Database
 {
-	public interface IDBInsertable
+	public interface IDBSelectable
 	{
-		IList<NameValuePair> NamedValues { get; }
+		bool Init(SQLiteDataReader reader);
 	}
 }
