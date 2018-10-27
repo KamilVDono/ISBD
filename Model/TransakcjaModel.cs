@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SQLite;
 using ISBD.Database;
 
 namespace ISBD.Model
 {
-	class TransakcjaModel : Database.IDBInsertable
+	public class TransakcjaModel : Database.IDBInsertable, IDBTableItem, IDBSelectable
 	{
 		public long IdT { get; set; }
 		public double Kwota { get; set; }
@@ -21,11 +22,11 @@ namespace ISBD.Model
 				var list = new List<NameValuePair>()
 				{
 					new NameValuePair("Kwota", Kwota.ToString()),
-					new NameValuePair("Tytul", Tytul),
+					new NameValuePair("Tytul", Tytul).AddQuotes(),
 				};
 				if (string.IsNullOrEmpty(Opis) == false)
 				{
-					list.Add(new NameValuePair("Opis", Opis));
+					list.Add(new NameValuePair("Opis", Opis).AddQuotes());
 				}
 				list.Add(new NameValuePair("Data", Data.Ticks.ToString()));
 				list.Add(new NameValuePair("IdO", IdO.ToString()));
@@ -35,5 +36,34 @@ namespace ISBD.Model
 		}
 
 		public string Table => "Transakcje";
+		public bool Init(SQLiteDataReader reader)
+		{
+			if (reader.HasRows == false) return false;
+			if (reader.FieldCount != 7) return false;
+
+			IdT = reader.GetInt64(0);
+			Kwota = reader.GetDouble(1);
+			Tytul = reader.GetString(2);
+			Opis = reader.GetString(3);
+			Data = new DateTime(reader.GetInt64(4));
+			IdO = reader.GetInt64(5);
+			IdK = reader.GetInt64(6);
+
+			return true;
+		}
+		public static bool operator ==(TransakcjaModel left, TransakcjaModel right)
+		{
+			return left.IdT == right.IdT;
+		}
+
+		public static bool operator !=(TransakcjaModel left, TransakcjaModel right)
+		{
+			return !(left == right);
+		}
+
+		public override string ToString()
+		{
+			return $"IdT: {IdT} | Kwota: {Kwota} | Tytul: {Tytul} | Opis: {Opis} | Data: {Data} | IdO: {IdO} | IdK: {IdK}";
+		}
 	}
 }

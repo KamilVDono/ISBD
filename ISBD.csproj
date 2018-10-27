@@ -74,6 +74,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Database\Database.cs" />
+    <Compile Include="Database\IDBSelectable.cs" />
+    <Compile Include="Database\IDBTableItem.cs" />
     <Compile Include="Database\NameValuePair.cs" />
     <Compile Include="Model\DataAccess.cs" />
     <Compile Include="Database\IDBInsertable.cs" />
