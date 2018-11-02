@@ -77,6 +77,9 @@
     <Compile Include="Database\IDBSelectable.cs" />
     <Compile Include="Database\IDBTableItem.cs" />
     <Compile Include="Database\NameValuePair.cs" />
+    <Compile Include="ModelView\StateMachine.cs" />
+    <Compile Include="ModelView\State\StartupState.cs" />
+    <Compile Include="ModelView\State\State.cs" />
     <Compile Include="Model\DataAccess.cs" />
     <Compile Include="Database\IDBInsertable.cs" />
     <Compile Include="Model\KategoriaModel.cs" />
@@ -132,9 +135,6 @@
     </None>
   </ItemGroup>
   <ItemGroup />
-  <ItemGroup>
-    <Resource Include="ModelView\ModelView.txt" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets" Condition="Exists('packages\System.Data.SQLite.Core.1.0.109.2\build\net46\System.Data.SQLite.Core.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
