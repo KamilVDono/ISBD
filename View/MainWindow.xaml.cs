@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ISBD.Model.Tests;
+using ISBD.ModelView;
 
 namespace ISBD
 {
@@ -25,7 +26,7 @@ namespace ISBD
 		{
 			InitializeComponent();
 
-			new QueryTest();
+			var stateMachine = StateMachine.Instance;
 		}
 	}
 }

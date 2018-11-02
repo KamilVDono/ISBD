@@ -11,6 +11,14 @@ namespace ISBD.Model
 	public class UprawnienieModel : Database.IDBInsertable, IDBTableItem, IDBSelectable
 	{
 		public long IdU { get; set; }
+		/// <summary>
+		/// Poziom uprawnień to:
+		/// 0 - ADMIN
+		/// 1 - READ
+		/// 2 - READ & WRITE
+		/// -2 - ODJĘCIE WRITE
+		/// -1 - ODJĘCIE UPRAWNIENIA
+		/// </summary>
 		public int Poziom { get; set; }
 		public long IdOBene { get; set; }
 		public long IdOD { get; set; }
