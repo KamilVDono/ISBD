@@ -12,8 +12,6 @@ namespace ISBD.ModelView
 {
 	public class StateMachine: Singleton<StateMachine>
 	{
-		public static readonly Type START_TYPE = typeof(StartupState);
-
 		private List<Action> StartupActions = new List<Action>()
 		{
 			() => {new QueryTest();},
@@ -24,13 +22,18 @@ namespace ISBD.ModelView
 		};
 
 		private Dictionary<Type, State.State> StateInstances = new Dictionary<Type, State.State>();
-		private Stack<State.State> StatesStack = new Stack<State.State>();
+		private Stack<UIState> UIStatesStack = new Stack<UIState>();
+		private Stack<LogicState> LogicStatesStack = new Stack<LogicState>();
 
 		public StateMachine()
 		{
 			StartupActions.ForEach(action => action());
 			InitDictionary();
-			SetStartupState();
+		}
+
+		public void InitStateMachine<T>() where T : LogicState
+		{
+			PushState<T>(null);
 		}
 
 		public void PushState<T>(StatePushParameters parameters) where T : State.State
@@ -42,19 +45,17 @@ namespace ISBD.ModelView
 			}
 			stateToPush.Push(parameters);
 
-			if (PopUntil<T>())
+			if (stateToPush is UIState)
 			{
-				stateToPush.ResumeState();
+				PushUIState(stateToPush as UIState);
 			}
 			else
 			{
-				StatesStack.Peek().PauseState();
-				StatesStack.Push(stateToPush);
-				stateToPush.StartState();
+				PushLogicState(stateToPush as LogicState);
 			}
 		}
 
-		public bool PopUntil<T>() where T : State.State
+		public bool PopUIUntil<T>() where T : UIState
 		{
 			GetStateInstance<T>(out var state);
 			if (state == null)
@@ -62,11 +63,16 @@ namespace ISBD.ModelView
 				return false;
 			}
 
-			if (StatesStack.Contains(state))
+			return PopUIUntil(state);
+		}
+
+		public bool PopUIUntil(UIState state)
+		{
+			if (UIStatesStack.Contains(state))
 			{
-				while (StatesStack.Peek() != state)
+				while (UIStatesStack.Peek() != state)
 				{
-					StatesStack.Pop().StopState();
+					UIStatesStack.Pop().StopState();
 				}
 				return true;
 			}
@@ -74,24 +80,29 @@ namespace ISBD.ModelView
 			return false;
 		}
 
-		public void PopState()
+		public void PopUIState()
 		{
-			if (StatesStack.Count > 1)
+			if (UIStatesStack.Count > 1)
 			{
-				StatesStack.Pop().StopState();
+				UIStatesStack.Pop().StopState();
 			}
 			System.Console.Error.WriteLine("There is only one state in stack, can not pop this");
 		}
 
-		public State.State CurrentState()
+		public UIState CurrentUIState()
 		{
-			return StatesStack.Peek();
+			return UIStatesStack.Peek();
 		}
 
-		public bool IsStateInStack<T>() where T : State.State
+		public LogicState CurrentLogicState()
+		{
+			return LogicStatesStack.Count > 0 ? LogicStatesStack.Peek() : null;
+		}
+
+		public bool IsUIStateInStack<T>() where T : UIState
 		{
 			GetStateInstance<T>(out var state);
-			return state != null && StatesStack.Contains(state);
+			return state != null && UIStatesStack.Contains(state);
 		}
 
 		public T GetStateInstance<T>() where T : State.State
@@ -124,16 +135,29 @@ namespace ISBD.ModelView
 			} );
 		}
 
-		private void SetStartupState()
+		private void PushUIState(UIState state)
 		{
-			if (StateInstances.TryGetValue(START_TYPE, out var state) == false)
+			if (PopUIUntil(state))
 			{
-				System.Console.Error.WriteLine($"There is no {START_TYPE.FullName} state in states dictionary but is market as START_TYPE, please fix it!");
-				throw new ArgumentNullException();
+				state.ResumeState();
 			}
-			state.Push(null);
-			StatesStack.Push(state);
+			else
+			{
+				UIStatesStack.Peek().PauseState();
+				UIStatesStack.Push(state);
+				state.StartState();
+			}
+		}
+
+		private void PushLogicState(LogicState state)
+		{
+			if (LogicStatesStack.Count > 0)
+			{
+				LogicStatesStack.Peek().StopState();
+			}
+			LogicStatesStack.Push(state);
 			state.StartState();
 		}
+
 	}
 }

@@ -78,7 +78,6 @@
     <Compile Include="Database\IDBTableItem.cs" />
     <Compile Include="Database\NameValuePair.cs" />
     <Compile Include="ModelView\StateMachine.cs" />
-    <Compile Include="ModelView\State\StartupState.cs" />
     <Compile Include="ModelView\State\State.cs" />
     <Compile Include="Model\DataAccess.cs" />
     <Compile Include="Database\IDBInsertable.cs" />
