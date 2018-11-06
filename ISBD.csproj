@@ -78,6 +78,11 @@
     <Compile Include="Database\IDBTableItem.cs" />
     <Compile Include="Database\NameValuePair.cs" />
     <Compile Include="ModelView\StateMachine.cs" />
+    <Compile Include="ModelView\State\ISecondPage.cs" />
+    <Compile Include="ModelView\State\IStartupUI.cs" />
+    <Compile Include="ModelView\State\SecondState.cs" />
+    <Compile Include="ModelView\State\StartupLogicState.cs" />
+    <Compile Include="ModelView\State\StartupUIState.cs" />
     <Compile Include="ModelView\State\State.cs" />
     <Compile Include="Model\DataAccess.cs" />
     <Compile Include="Database\IDBInsertable.cs" />
@@ -87,6 +92,7 @@
     <Compile Include="Model\Tests\QueryTest.cs" />
     <Compile Include="Model\TransakcjaModel.cs" />
     <Compile Include="Model\UprawnienieModel.cs" />
+    <Compile Include="Utils\ButtonExtension.cs" />
     <Compile Include="Utils\ColorConverter.cs" />
     <Compile Include="Utils\Singleton.cs" />
     <Compile Include="View\MainWindow.xaml.cs">
@@ -96,9 +102,23 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="View\SecondPage.xaml.cs">
+      <DependentUpon>SecondPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\StartupPage.xaml.cs">
+      <DependentUpon>StartupPage.xaml</DependentUpon>
+    </Compile>
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\SecondPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\StartupPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>

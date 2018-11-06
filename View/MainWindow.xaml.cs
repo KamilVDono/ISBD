@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
+using System.Threading;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using ISBD.Model.Tests;
 using ISBD.ModelView;
+using ISBD.ModelView.State;
 
 namespace ISBD
 {
@@ -22,11 +11,22 @@ namespace ISBD
 	/// </summary>
 	public partial class MainWindow : Window
 	{
+		public static MainWindow Instance;
+
 		public MainWindow()
 		{
 			InitializeComponent();
+			InitApplication();
+		}
+
+		void InitApplication()
+		{
+			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+
+			Instance = this;
 
 			var stateMachine = StateMachine.Instance;
+			stateMachine.InitStateMachine<StartupLogicState>();
 		}
 	}
 }
