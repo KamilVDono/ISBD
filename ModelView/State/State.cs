@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace ISBD.ModelView.State
 {
@@ -16,7 +17,10 @@ namespace ISBD.ModelView.State
 	{
 		public abstract void Push(StatePushParameters pushParameters);
 		public abstract void StartState();
-		public abstract void StopState();
+
+		public virtual void StopState()
+		{
+		}
 	}
 
 	public abstract class LogicState : State
@@ -26,49 +30,69 @@ namespace ISBD.ModelView.State
 
 	public class UIPushParameters: StatePushParameters
 	{
-		public Type WindowType;
+		public Type PageType;
+		public bool CreateNewPage;
 	}
 
 	public abstract class UIState : State
 	{
-		protected Window UIWindow;
+		protected Page UIPage;
 		protected UIPushParameters Parameters;
+		protected virtual Type DefaultType { get; }
+
+		public UIState()
+		{
+			if (DefaultType != null)
+			{
+				UIPage = (Page)Activator.CreateInstance(DefaultType);
+			}
+			else
+			{
+				CustomCreatePage();
+			}
+		}
 
 		public override void Push(StatePushParameters pushParameters)
 		{
 			Parameters = pushParameters as UIPushParameters;
-			CreateWindow();
-			PrepareWindow();
+			if(Parameters != null && Parameters.CreateNewPage) CreatePage();
+			PreparePage();
 
 		}
 
 		public override void StartState()
 		{
-			ShowWindow();
+			ShowPage();
 		}
 
-		public abstract void PauseState();
-		public abstract void ResumeState();
+		public virtual void PauseState() { }
+		public virtual void ResumeState() { }
 
-		protected void CreateWindow()
+		protected void CreatePage()
 		{
 			if (Parameters != null)
 			{
-				UIWindow = (Window)Activator.CreateInstance(Parameters.WindowType);
+				UIPage = (Page)Activator.CreateInstance(Parameters.PageType);
 			}
 			else
 			{
-				CustomCreateWindow();
+				CustomCreatePage();
 			}
 		}
 
-		protected abstract void CustomCreateWindow();
-
-		protected abstract void PrepareWindow();
-
-		protected virtual void ShowWindow()
+		protected virtual void CustomCreatePage()
 		{
-			UIWindow.Show();
+
+		}
+
+		protected virtual void PreparePage()
+		{
+
+		}
+
+		protected virtual void ShowPage()
+		{
+			MainWindow.Instance.Frame.NavigationService.Navigate(UIPage);
 		}
 	}
 }

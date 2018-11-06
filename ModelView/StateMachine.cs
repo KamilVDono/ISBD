@@ -18,7 +18,7 @@ namespace ISBD.ModelView
 		};
 		private List<Type> StateTypes = new List<Type>()
 		{
-
+			typeof(StartupUIState), typeof(StartupLogicState), typeof(SecondState)
 		};
 
 		private Dictionary<Type, State.State> StateInstances = new Dictionary<Type, State.State>();
@@ -123,7 +123,6 @@ namespace ISBD.ModelView
 
 		private void InitDictionary()
 		{
-			StateTypes.Clear();
 			StateTypes = (new HashSet<Type>(StateTypes)).ToList();
 			StateTypes.ForEach(stateType =>
 			{
@@ -143,7 +142,7 @@ namespace ISBD.ModelView
 			}
 			else
 			{
-				UIStatesStack.Peek().PauseState();
+				if(UIStatesStack.Count > 0) UIStatesStack.Peek().PauseState();
 				UIStatesStack.Push(state);
 				state.StartState();
 			}
