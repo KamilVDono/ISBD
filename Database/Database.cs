@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SQLite;
+using System.Globalization;
 using System.Text;
+using System.Threading;
 using ISBD.Utils;
 
 namespace ISBD.Database
@@ -39,6 +41,7 @@ namespace ISBD.Database
 
 		public List<T> SelectAll<T>() where T : IDBTableItem, IDBSelectable, new()
 		{
+			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 			T item = new T();
 			List<T> returnList = new List<T>();
 
@@ -55,6 +58,7 @@ namespace ISBD.Database
 
 		public void Insert<T>(T insertable) where T: IDBTableItem, IDBInsertable
 		{
+			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 			var command = _connection.CreateCommand();
 			command.CommandText = $"INSERT INTO {insertable.Table} {GetInsertSQL(insertable)};";
 			command.ExecuteNonQuery();
