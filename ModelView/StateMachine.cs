@@ -21,9 +21,9 @@ namespace ISBD.ModelView
 			typeof(StartupUIState), typeof(StartupLogicState), typeof(SecondState)
 		};
 
-		private Dictionary<Type, State.State> StateInstances = new Dictionary<Type, State.State>();
-		private Stack<UIState> UIStatesStack = new Stack<UIState>();
-		private Stack<LogicState> LogicStatesStack = new Stack<LogicState>();
+		private readonly Dictionary<Type, State.State> StateInstances = new Dictionary<Type, State.State>();
+		private readonly Stack<UIState> UIStatesStack = new Stack<UIState>();
+		private readonly Stack<LogicState> LogicStatesStack = new Stack<LogicState>();
 
 		public StateMachine()
 		{

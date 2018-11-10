@@ -95,4 +95,9 @@ namespace ISBD.ModelView.State
 			MainWindow.Instance.Frame.NavigationService.Navigate(UIPage);
 		}
 	}
+
+	public abstract class ConnectorState<T> : UIState where T : class
+	{
+		protected T Connector => UIPage as T;
+	}
 }

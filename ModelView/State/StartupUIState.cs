@@ -8,14 +8,13 @@ using ISBD.View;
 
 namespace ISBD.ModelView.State
 {
-	class StartupUIState : UIState
+	class StartupUIState : ConnectorState<IStartupUI>
 	{
 		private DispatcherTimer DispatcherTimer;
 		private readonly int MaxTicks = 5;
 		private int CurrentTicks = 0;
 		
 		protected override Type DefaultType => typeof(StartupPage);
-		private IStartupUI Target => (IStartupUI)UIPage;
 
 		public override void StartState()
 		{
@@ -28,7 +27,7 @@ namespace ISBD.ModelView.State
 
 		private void dispatcherTimer_Tick(object sender, EventArgs e)
 		{
-			Target.SetText((++CurrentTicks).ToString());
+			Connector.SetText((++CurrentTicks).ToString());
 			if (CurrentTicks == MaxTicks)
 			{
 				DispatcherTimer.Stop();

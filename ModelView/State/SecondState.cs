@@ -8,16 +8,15 @@ using ISBD.View;
 
 namespace ISBD.ModelView.State
 {
-	class SecondState : UIState
+	class SecondState : ConnectorState<ISecondPage>
 	{
 		protected override Type DefaultType => typeof(SecondPage);
-		private ISecondPage Target => (ISecondPage) UIPage;
 
 		public override void StartState()
 		{
 			base.StartState();
-			Target.ExitButton.ClearClick();
-			Target.ExitButton.Click += (a,b) => System.Windows.Application.Current.Shutdown();
+			Connector.ExitButton.ClearClick();
+			Connector.ExitButton.Click += (a,b) => System.Windows.Application.Current.Shutdown();
 		}
 	}
 }
