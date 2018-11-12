@@ -47,6 +47,9 @@ namespace ISBD.Model
 
 		public static bool operator ==(KategoriaModel left, KategoriaModel right)
 		{
+			if (ReferenceEquals(left, right)) return true;
+			if (ReferenceEquals(left, null)) return false;
+			if (ReferenceEquals(right, null)) return false;
 			return left.IdK == right.IdK;
 		}
 

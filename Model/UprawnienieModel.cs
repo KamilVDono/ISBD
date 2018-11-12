@@ -52,6 +52,9 @@ namespace ISBD.Model
 
 		public static bool operator ==(UprawnienieModel left, UprawnienieModel right)
 		{
+			if (ReferenceEquals(left, right)) return true;
+			if (ReferenceEquals(left, null)) return false;
+			if (ReferenceEquals(right, null)) return false;
 			return left.IdU == right.IdU;
 		}
 

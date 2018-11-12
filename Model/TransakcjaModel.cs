@@ -53,6 +53,9 @@ namespace ISBD.Model
 		}
 		public static bool operator ==(TransakcjaModel left, TransakcjaModel right)
 		{
+			if (ReferenceEquals(left, right)) return true;
+			if (ReferenceEquals(left, null)) return false;
+			if (ReferenceEquals(right, null)) return false;
 			return left.IdT == right.IdT;
 		}
 
