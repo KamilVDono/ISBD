@@ -24,6 +24,8 @@ namespace ISBD.View
 		public LoginPage()
 		{
 			InitializeComponent();
+			LoginBox.TextChanged += DataChanged;
+			PasswordBox.PasswordChanged += DataChanged;
 		}
 
 		public string Login => LoginBox.Text;
@@ -38,6 +40,17 @@ namespace ISBD.View
 		{
 			get => MessageBlock.Text;
 			set => MessageBlock.Text = value;
+		}
+
+		public bool SaveCurrentUser => RememberMeCheck.IsChecked.Value;
+
+		private void DataChanged(object sender, TextChangedEventArgs e)
+		{
+			MessageBlock.Text = "";
+		}
+		private void DataChanged(object sender, RoutedEventArgs e)
+		{
+			MessageBlock.Text = "";
 		}
 	}
 }

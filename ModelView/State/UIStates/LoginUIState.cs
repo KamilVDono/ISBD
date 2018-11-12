@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using ISBD.Model;
+using ISBD.ModelView.State.LogicStates;
 using ISBD.Utils;
 using ISBD.View;
 
@@ -38,8 +39,11 @@ namespace ISBD.ModelView.State
 
 			if (currentLogin != null)
 			{
-				//TODO: Implement login
-				throw new System.NotImplementedException("Implement login");
+				StateMachine.Instance.PushState<LoggedinLoginState>(new LoggedinStatePushParameters()
+					{
+						user = currentLogin,
+						saveLogged = Connector.SaveCurrentUser
+					});
 			}
 			else
 			{

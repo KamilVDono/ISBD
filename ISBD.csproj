@@ -82,6 +82,7 @@
     <Compile Include="ModelView\State\Connectors\ILoginUI.cs" />
     <Compile Include="ModelView\State\Connectors\ISecondPage.cs" />
     <Compile Include="ModelView\State\Connectors\IStartupUI.cs" />
+    <Compile Include="ModelView\State\LogicStates\LoggedinLoginState.cs" />
     <Compile Include="ModelView\State\UIStates\LoginUIState.cs" />
     <Compile Include="ModelView\State\UIStates\SecondState.cs" />
     <Compile Include="ModelView\State\LogicStates\StartupLogicState.cs" />

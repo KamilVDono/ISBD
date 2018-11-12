@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using ISBD.Model.Tests;
@@ -15,11 +16,6 @@ namespace ISBD.ModelView
 		private List<Action> StartupActions = new List<Action>()
 		{
 			() => {new QueryTest();},
-		};
-		private List<Type> StateTypes = new List<Type>()
-		{
-			typeof(StartupUIState), typeof(StartupLogicState), typeof(SecondState),
-			typeof(LoginUIState)
 		};
 
 		private readonly Dictionary<Type, State.State> StateInstances = new Dictionary<Type, State.State>();
@@ -124,8 +120,11 @@ namespace ISBD.ModelView
 
 		private void InitDictionary()
 		{
-			StateTypes = (new HashSet<Type>(StateTypes)).ToList();
-			StateTypes.ForEach(stateType =>
+			var stateBaseType = typeof(State.State);
+			var assembly = Assembly.GetAssembly(stateBaseType);
+
+			List<Type> stateTypes = assembly.GetTypes().Where(type => type.IsSubclassOf(stateBaseType) && type.IsAbstract == false).ToList();
+			stateTypes.ForEach(stateType =>
 			{
 				if (stateType.IsSubclassOf(typeof(State.State)))
 				{

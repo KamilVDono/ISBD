@@ -8,7 +8,7 @@ namespace ISBD.ModelView.State
 		string Password { get; }
 		Button LoginButton { get; }
 		Button RegisterButton { get; }
-
 		string Message { get; set; }
+		bool SaveCurrentUser { get; }
 	}
 }
