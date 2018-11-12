@@ -1,12 +1,15 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using ISBD.Model;
 using ISBD.Utils;
+using ISBD.View;
 
 namespace ISBD.ModelView.State
 {
 	public class LoginUIState : ConnectorState<ILoginUI>
 	{
+		protected override Type DefaultType => typeof(LoginPage);
 		public override void StartState()
 		{
 			base.StartState();
@@ -41,7 +44,8 @@ namespace ISBD.ModelView.State
 			else
 			{
 				//TODO: Implement wrong Login-Password set
-				throw new System.NotImplementedException("Implement wrong Login-Password set");
+				//throw new System.NotImplementedException("Implement wrong Login-Password set");
+				Connector.Message = "Wrong login or password";
 			}
 		}
 	}

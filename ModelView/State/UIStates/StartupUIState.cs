@@ -11,7 +11,7 @@ namespace ISBD.ModelView.State
 	class StartupUIState : ConnectorState<IStartupUI>
 	{
 		private DispatcherTimer DispatcherTimer;
-		private readonly int MaxTicks = 5;
+		private readonly int MaxTicks = 2;
 		private int CurrentTicks = 0;
 		
 		protected override Type DefaultType => typeof(StartupPage);
@@ -31,7 +31,7 @@ namespace ISBD.ModelView.State
 			if (CurrentTicks == MaxTicks)
 			{
 				DispatcherTimer.Stop();
-				StateMachine.Instance.PushState<SecondState>(null);
+				StateMachine.Instance.PushState<LoginUIState>(null);
 			}
 		}
 	}

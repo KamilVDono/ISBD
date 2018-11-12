@@ -18,7 +18,8 @@ namespace ISBD.ModelView
 		};
 		private List<Type> StateTypes = new List<Type>()
 		{
-			typeof(StartupUIState), typeof(StartupLogicState), typeof(SecondState)
+			typeof(StartupUIState), typeof(StartupLogicState), typeof(SecondState),
+			typeof(LoginUIState)
 		};
 
 		private readonly Dictionary<Type, State.State> StateInstances = new Dictionary<Type, State.State>();
