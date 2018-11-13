@@ -80,11 +80,9 @@
     <Compile Include="Database\NameValuePair.cs" />
     <Compile Include="ModelView\StateMachine.cs" />
     <Compile Include="ModelView\State\Connectors\ILoginUI.cs" />
-    <Compile Include="ModelView\State\Connectors\ISecondPage.cs" />
     <Compile Include="ModelView\State\Connectors\IStartupUI.cs" />
     <Compile Include="ModelView\State\LogicStates\LoggedinLoginState.cs" />
     <Compile Include="ModelView\State\UIStates\LoginUIState.cs" />
-    <Compile Include="ModelView\State\UIStates\SecondState.cs" />
     <Compile Include="ModelView\State\LogicStates\StartupLogicState.cs" />
     <Compile Include="ModelView\State\UIStates\StartupUIState.cs" />
     <Compile Include="ModelView\State\State.cs" />
@@ -99,7 +97,7 @@
     <Compile Include="Utils\ButtonExtension.cs" />
     <Compile Include="Utils\ColorConverter.cs" />
     <Compile Include="Utils\Singleton.cs" />
-    <Compile Include="View\LoginPage.xaml.cs">
+    <Compile Include="View\Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\MainWindow.xaml.cs">
@@ -109,13 +107,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="View\SecondPage.xaml.cs">
-      <DependentUpon>SecondPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\StartupPage.xaml.cs">
+    <Compile Include="View\Pages\StartupPage.xaml.cs">
       <DependentUpon>StartupPage.xaml</DependentUpon>
     </Compile>
-    <Page Include="View\LoginPage.xaml">
+    <Page Include="View\Pages\LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -123,11 +118,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\SecondPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\StartupPage.xaml">
+    <Page Include="View\Pages\StartupPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
