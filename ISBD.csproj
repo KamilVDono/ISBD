@@ -80,10 +80,12 @@
     <Compile Include="Database\NameValuePair.cs" />
     <Compile Include="ModelView\StateMachine.cs" />
     <Compile Include="ModelView\State\Connectors\ILoginUI.cs" />
+    <Compile Include="ModelView\State\Connectors\IMainMenu.cs" />
     <Compile Include="ModelView\State\Connectors\IStartupUI.cs" />
-    <Compile Include="ModelView\State\LogicStates\LoggedinLoginState.cs" />
+    <Compile Include="ModelView\State\LogicStates\LoggedinLogicState.cs" />
     <Compile Include="ModelView\State\UIStates\LoginUIState.cs" />
     <Compile Include="ModelView\State\LogicStates\StartupLogicState.cs" />
+    <Compile Include="ModelView\State\UIStates\MainMenuUIState.cs" />
     <Compile Include="ModelView\State\UIStates\StartupUIState.cs" />
     <Compile Include="ModelView\State\State.cs" />
     <Compile Include="Model\DataAccess.cs" />
@@ -107,6 +109,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="View\Pages\MainMenuPage.xaml.cs">
+      <DependentUpon>MainMenuPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Pages\StartupPage.xaml.cs">
       <DependentUpon>StartupPage.xaml</DependentUpon>
     </Compile>
@@ -117,6 +122,10 @@
     <Page Include="View\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Pages\MainMenuPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\Pages\StartupPage.xaml">
       <SubType>Designer</SubType>
@@ -149,6 +158,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

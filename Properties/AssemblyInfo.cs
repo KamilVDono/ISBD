@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyTitle("ISBD")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("KVD")]
 [assembly: AssemblyProduct("ISBD")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]

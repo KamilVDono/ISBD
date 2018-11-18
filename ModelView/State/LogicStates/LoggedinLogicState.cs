@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ISBD.Model;
+using ISBD.ModelView.State.UIStates;
 
 namespace ISBD.ModelView.State.LogicStates
 {
@@ -13,9 +14,12 @@ namespace ISBD.ModelView.State.LogicStates
 		public bool saveLogged;
 	}
 
-	class LoggedinLoginState : LogicState
+	class LoggedinLogicState : LogicState
 	{
 		public bool IsAdmin => Permissions.Any(permission => permission.IdOBene == permission.IdOD && permission.Poziom == 0);
+		public OsobaModel LoggedInPerson => Parameters.user;
+		public string Name => Parameters.user.Imie;
+		public string LastName => Parameters.user.Nazwisko;
 
 		private LoggedinStatePushParameters Parameters { get; set; }
 		private List<UprawnienieModel> Permissions
@@ -38,8 +42,7 @@ namespace ISBD.ModelView.State.LogicStates
 
 		public override void StartState()
 		{
-			//Add main menu
-			//StateMachine.Instance.PushState<MainMenuState>();
+			StateMachine.Instance.PushState<MainMenuUIState>(null);
 		}
 	}
 }
