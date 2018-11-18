@@ -8,13 +8,11 @@ using ISBD.View;
 
 namespace ISBD.ModelView.State
 {
-	class StartupUIState : ConnectorState<IStartupUI>
+	class StartupUIState : ConnectorState<IStartupUI, StartupPage>
 	{
 		private DispatcherTimer DispatcherTimer;
 		private readonly int MaxTicks = 2;
 		private int CurrentTicks = 0;
-		
-		protected override Type DefaultType => typeof(StartupPage);
 
 		public override void StartState()
 		{

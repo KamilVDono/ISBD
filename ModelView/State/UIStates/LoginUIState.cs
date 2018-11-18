@@ -8,9 +8,8 @@ using ISBD.View;
 
 namespace ISBD.ModelView.State
 {
-	public class LoginUIState : ConnectorState<ILoginUI>
+	public class LoginUIState : ConnectorState<ILoginUI, LoginPage>
 	{
-		protected override Type DefaultType => typeof(LoginPage);
 		public override void StartState()
 		{
 			base.StartState();
@@ -39,7 +38,7 @@ namespace ISBD.ModelView.State
 
 			if (currentLogin != null)
 			{
-				StateMachine.Instance.PushState<LoggedinLoginState>(new LoggedinStatePushParameters()
+				StateMachine.Instance.PushState<LoggedinLogicState>(new LoggedinStatePushParameters()
 					{
 						user = currentLogin,
 						saveLogged = Connector.SaveCurrentUser
@@ -49,7 +48,7 @@ namespace ISBD.ModelView.State
 			{
 				//TODO: Implement wrong Login-Password set
 				//throw new System.NotImplementedException("Implement wrong Login-Password set");
-				Connector.Message = "Wrong login or password";
+				Connector.Message = "Wrong login or password\nTry admin admin";
 			}
 		}
 	}

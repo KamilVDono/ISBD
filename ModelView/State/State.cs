@@ -96,8 +96,9 @@ namespace ISBD.ModelView.State
 		}
 	}
 
-	public abstract class ConnectorState<T> : UIState where T : class
+	public abstract class ConnectorState<T, TP> : UIState where T : class where TP : Page
 	{
 		protected T Connector => UIPage as T;
+		protected override Type DefaultType => typeof(TP);
 	}
 }
