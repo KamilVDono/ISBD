@@ -22,6 +22,18 @@ namespace ISBD.ModelView.State
 			Connector.Logins = GetLogins();
 		}
 
+		public static OsobaModel TryLogin(string login, string password)
+		{
+			Database.Database.Instance.Connect();
+
+			var users = Database.Database.Instance.SelectAll<OsobaModel>();
+			var currentLogin =
+				users.FirstOrDefault(user => user.Login == login && user.Haslo == password);
+
+			Database.Database.Instance.Dispose();
+			return currentLogin;
+		}
+
 		private void Register(object sender, RoutedEventArgs e)
 		{
 			//TODO: Implement registration
@@ -30,13 +42,7 @@ namespace ISBD.ModelView.State
 
 		private void Login(object sender, RoutedEventArgs e)
 		{
-			Database.Database.Instance.Connect();
-
-			var users = Database.Database.Instance.SelectAll<OsobaModel>();
-			var currentLogin =
-				users.FirstOrDefault(user => user.Login == Connector.Login && user.Haslo == Connector.Password);
-
-			Database.Database.Instance.Dispose();
+			var currentLogin = TryLogin(Connector.Login, Connector.Password);
 
 			if (currentLogin != null)
 			{

@@ -42,6 +42,7 @@ namespace ISBD.ModelView.State.LogicStates
 
 		public override void StartState()
 		{
+			Database.Database.Instance.SaveLastLogin(LoggedInPerson.Login, LoggedInPerson.Haslo);
 			StateMachine.Instance.PushState<MainMenuUIState>(null);
 		}
 	}

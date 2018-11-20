@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
+using ISBD.Model;
+using ISBD.ModelView.State.LogicStates;
 using ISBD.View;
 
 namespace ISBD.ModelView.State
@@ -29,7 +31,20 @@ namespace ISBD.ModelView.State
 			if (CurrentTicks == MaxTicks)
 			{
 				DispatcherTimer.Stop();
-				StateMachine.Instance.PushState<LoginUIState>(null);
+				var (login, password) = Database.Database.Instance.GetLastLoginData();
+				OsobaModel lastUser = LoginUIState.TryLogin(login, password);
+				if (lastUser == null)
+				{
+					StateMachine.Instance.PushState<LoginUIState>(null);
+				}
+				else
+				{
+					StateMachine.Instance.PushState<LoggedinLogicState>(new LoggedinStatePushParameters()
+					{
+						user = lastUser,
+						saveLogged = true
+					});
+				}
 			}
 		}
 	}
