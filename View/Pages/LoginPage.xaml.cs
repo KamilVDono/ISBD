@@ -24,8 +24,14 @@ namespace ISBD.View
 		public LoginPage()
 		{
 			InitializeComponent();
-			LoginBox.TextChanged += DataChanged;
+			LoginBox.SelectionChanged += DataChanged;
 			PasswordBox.PasswordChanged += DataChanged;
+			SetActiveStateMessage(false);
+		}
+
+		public string[] Logins
+		{
+			set => LoginBox.ItemsSource = value;
 		}
 
 		public string Login => LoginBox.Text;
@@ -44,13 +50,14 @@ namespace ISBD.View
 
 		public bool SaveCurrentUser => RememberMeCheck.IsChecked.Value;
 
-		private void DataChanged(object sender, TextChangedEventArgs e)
-		{
-			MessageBlock.Text = "";
-		}
 		private void DataChanged(object sender, RoutedEventArgs e)
 		{
-			MessageBlock.Text = "";
+			SetActiveStateMessage(false);
+		}
+
+		public void SetActiveStateMessage(bool visible)
+		{
+			MessageBlock.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
 		}
 	}
 }

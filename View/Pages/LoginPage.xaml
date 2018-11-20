@@ -9,12 +9,32 @@
       Title="LoginPage">
 
     <Grid>
-        <TextBlock x:Name="MessageBlock" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="51" Width="780" Foreground="Red"/>
-        <TextBox x:Name="LoginBox" HorizontalAlignment="Left" Height="31" Margin="10,66,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="252"/>
-        <PasswordBox x:Name="PasswordBox" HorizontalAlignment="Left" Margin="10,102,0,0" VerticalAlignment="Top" Width="252" Height="38"/>
-        <Button x:Name="LoginButton" Content="Login" HorizontalAlignment="Left" Margin="10,211,0,0" VerticalAlignment="Top" Width="252" Height="35"/>
-        <CheckBox x:Name="RememberMeCheck" Content="Remember me" HorizontalAlignment="Left" Margin="10,145,0,0" VerticalAlignment="Top" Height="27" Width="252"/>
-        <Button x:Name="RegisterButton" Content="Register" HorizontalAlignment="Left" Margin="10,274,0,0" VerticalAlignment="Top" Width="252" Height="26"/>
-
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+            <ColumnDefinition Width="2*" MaxWidth="400" MinWidth="300"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Column="1" VerticalAlignment="Center" >
+            <TextBlock Text="Login:" VerticalAlignment="Center" Margin="20,5,20,10" FontWeight="Bold"/>
+            <ComboBox x:Name="LoginBox" Text="Login" VerticalAlignment="Center" Margin="20,0" Opacity="0.99" BorderThickness="0,0,0,1" BorderBrush="Black" Height="25">
+                <ComboBox.Effect>
+                    <DropShadowEffect Opacity="0.4" BlurRadius="1"/>
+                </ComboBox.Effect>
+            </ComboBox>
+            <TextBlock Text="Hasło:" VerticalAlignment="Center" Margin="20,20,20,10" FontWeight="Bold"/>
+            <PasswordBox x:Name="PasswordBox" VerticalAlignment="Center" PasswordChar="●" Margin="20,0" Height="25">
+                <PasswordBox.Effect>
+                    <DropShadowEffect Opacity="0.4" BlurRadius="1"/>
+                </PasswordBox.Effect>
+            </PasswordBox>
+            <TextBlock x:Name="MessageBlock" TextWrapping="Wrap" VerticalAlignment="Center" Foreground="Red" Text="Złe hasło" Padding="20,10,20,0" HorizontalAlignment="Right" Visibility="Collapsed"/>
+            <CheckBox x:Name="RememberMeCheck" Content="Zapamiętaj mnie" Margin="20,10,20,0" VerticalAlignment="Center" HorizontalAlignment="Right" />
+            <Button x:Name="LoginButton" Content="Zaloguj" VerticalAlignment="Center" Margin="20,20,20,0" Height="30">
+                <Button.Effect>
+                    <DropShadowEffect Opacity="0.4" BlurRadius="1"/>
+                </Button.Effect>
+            </Button>
+            <Button x:Name="RegisterButton" Content="Załóż nowe konto" Margin="20" VerticalAlignment="Center" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Center"/>
+        </StackPanel>
     </Grid>
 </Page>

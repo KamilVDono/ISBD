@@ -18,6 +18,8 @@ namespace ISBD.ModelView.State
 
 			Connector.RegisterButton.ClearClick();
 			Connector.RegisterButton.Click += Register;
+
+			Connector.Logins = GetLogins();
 		}
 
 		private void Register(object sender, RoutedEventArgs e)
@@ -48,8 +50,16 @@ namespace ISBD.ModelView.State
 			{
 				//TODO: Implement wrong Login-Password set
 				//throw new System.NotImplementedException("Implement wrong Login-Password set");
-				Connector.Message = "Wrong login or password\nTry admin admin";
+				Connector.Message = "Wrong login or password";
 			}
+		}
+
+		private string[] GetLogins()
+		{
+			Database.Database.Instance.Connect();
+			var logins = Database.Database.Instance.SelectAll<OsobaModel>().Select(person => person.Login);
+			Database.Database.Instance.Dispose();
+			return logins.ToArray();
 		}
 	}
 }
