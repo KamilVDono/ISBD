@@ -50,12 +50,12 @@ namespace ISBD.Model.Tests
 			Database.Database.Instance.Connect();
 			List<SymbolModel> uprawnienia = new List<SymbolModel>()
 			{
-				new SymbolModel(){Kolor = Color.FromArgb(255, 255,255,255)}, //2
-				new SymbolModel(){Kolor = Color.FromArgb(255, 255,0,0)}, //3
+				new SymbolModel(){Kolor = Color.FromArgb(255, 69,169,255)}, //6
+				new SymbolModel(){Kolor = Color.FromArgb(255, 255, 0, 0)}, //2
+				new SymbolModel(){Kolor = Color.FromArgb(255, 255, 60, 255)}, //3
 				new SymbolModel(){Kolor = Color.FromArgb(255, 0, 0, 255)}, //4
 				new SymbolModel(){Kolor = Color.FromArgb(255, 0, 255,0)}, //5
 				new SymbolModel(){Kolor = Color.FromArgb(255, 255,255,0)}, //6
-
 			};
 
 			uprawnienia.ForEach(uprawnienie => Database.Database.Instance.Insert(uprawnienie));
