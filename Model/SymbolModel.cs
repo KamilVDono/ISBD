@@ -40,7 +40,7 @@ namespace ISBD.Model
 
 			IdS = reader.GetInt64(0);
 			Kolor = reader.GetInt32(1).Color();
-			Ikona = reader.GetString(2);
+			Ikona = reader.IsDBNull(2) ? "" : reader.GetString(2);
 
 			return true;
 		}

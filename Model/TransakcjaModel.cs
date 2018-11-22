@@ -44,7 +44,7 @@ namespace ISBD.Model
 			IdT = reader.GetInt64(0);
 			Kwota = reader.GetDouble(1);
 			Tytul = reader.GetString(2);
-			Opis = reader.GetString(3);
+			Opis = reader.IsDBNull(3) ? "" : reader.GetString(3);
 			Data = new DateTime(reader.GetInt64(4));
 			IdO = reader.GetInt64(5);
 			IdK = reader.GetInt64(6);
