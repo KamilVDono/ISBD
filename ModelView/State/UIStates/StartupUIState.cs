@@ -13,7 +13,7 @@ namespace ISBD.ModelView.State
 	class StartupUIState : ConnectorState<IStartupUI, StartupPage>
 	{
 		private DispatcherTimer DispatcherTimer;
-		private readonly int MaxTicks = 2;
+		private readonly int MaxTicks = 1;
 		private int CurrentTicks = 0;
 
 		public override void StartState()
