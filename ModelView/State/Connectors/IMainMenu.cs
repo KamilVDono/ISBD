@@ -1,7 +1,18 @@
-﻿namespace ISBD.ModelView.State
+﻿using System;
+using System.Collections.Generic;
+using ISBD.Model;
+
+namespace ISBD.ModelView.State
 {
 	public interface IMainMenu
 	{
-		string MessageText { get; set; }
+		void RegisterForSelectedUserChange(Action<OsobaModel> selectionAction);
+
+		void UnregisterForSelectedUserChange(Action<OsobaModel> selectionAction);
+
+		List<TransakcjaModel> Transactions { set; }
+
+		List<OsobaModel> ValidUsers { set; }
+
 	}
 }

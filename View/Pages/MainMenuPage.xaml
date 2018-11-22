@@ -6,10 +6,73 @@
       xmlns:local="clr-namespace:ISBD.View.Pages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="MainMenuPage">
+      Title="MainMenuPage"
+      >
+
+    <Page.Resources>
+        <local:OsobaModel2NameConverter x:Key="osobaModel2NameConverter"></local:OsobaModel2NameConverter>
+        <local:Double2Currency x:Key="double2Currency"></local:Double2Currency>
+        <local:IdK2Category x:Key="idK2Category"></local:IdK2Category>
+        <local:Transaction2Color x:Key="transaction2Color"></local:Transaction2Color>
+        <local:Transaction2ColorForeground x:Key="transaction2ColorForeground"></local:Transaction2ColorForeground>
+    </Page.Resources>
 
     <Grid>
-        <TextBlock x:Name="Message" HorizontalAlignment="Center"  TextWrapping="Wrap" Text="Welcome {0}" VerticalAlignment="Center" FontWeight="Bold" FontSize="18"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" MaxHeight="70"></RowDefinition>
+            <RowDefinition Height="1*" MaxHeight="70"></RowDefinition>
+            <RowDefinition Height="8*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"></ColumnDefinition>
+            <ColumnDefinition Width="7*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <ComboBox x:Name="UsersViewsChooser" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="30,10">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Converter={StaticResource osobaModel2NameConverter}}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <TextBlock Grid.Row="0" Grid.Column="1" Text="Główne menu" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="20" />
 
+        <Grid Grid.Row="1" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <ColumnDefinition Width="1*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="1" Margin="5" x:Name="MainMenuButton" IsEnabled="False" Content="Menu główne"/>
+            <Button Grid.Column="2" Margin="5" x:Name="TransactionsButton" Content="Transakcje" />
+            <Button Grid.Column="3" Margin="5" x:Name="StatsButton" Content="Statystyki" />
+            <Button Grid.Column="4" Margin="5" x:Name="CategoriesButton" Content="Kategorie" />
+        </Grid>
+
+        <ScrollViewer x:Name="MonthScrollViewer" Grid.Row="2" Grid.Column="0" Margin="5">
+            <ListView></ListView>
+        </ScrollViewer>
+
+        <DataGrid x:Name="HistoryTable" Grid.Row="2" Grid.Column="1" Margin="5" AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Data" Width="*" IsReadOnly="True" Binding="{Binding Data}"/>
+                <DataGridTextColumn Header="Tytuł" Width="3*" IsReadOnly="True" Binding="{Binding Tytul}"/>
+                <DataGridTextColumn Header="Kategoria" Width="2*" IsReadOnly="True" Binding="{Binding Path=IdK, Converter={StaticResource idK2Category}}"/>
+                <DataGridTextColumn Header="Kwota" Width="2*" IsReadOnly="True" Binding="{Binding Path=Kwota, Converter={StaticResource double2Currency}}"/>
+            </DataGrid.Columns>
+            <DataGrid.RowDetailsTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Opis}" Margin="10" />
+                </DataTemplate>
+            </DataGrid.RowDetailsTemplate>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Setter Property="Background" Value="{Binding Converter={StaticResource transaction2Color}}" />
+                    <Setter Property="Foreground" Value="{Binding Converter={StaticResource transaction2ColorForeground}}" />
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
     </Grid>
 </Page>
