@@ -10,14 +10,17 @@ namespace ISBD.Model
 {
 	public class UprawnienieModel : Database.IDBInsertable, IDBTableItem, IDBSelectable
 	{
+		public const int FULL_BAN = -2;
+		public const int WRITE_BAN = -1;
+		public const int WRITE_ALLOW = 2;
 		public long IdU { get; set; }
 		/// <summary>
 		/// Poziom uprawnień to:
 		/// 0 - ADMIN
 		/// 1 - READ
 		/// 2 - READ & WRITE
-		/// -2 - ODJĘCIE WRITE
-		/// -1 - ODJĘCIE UPRAWNIENIA
+		/// -2 - ODJĘCIE UPRAWNIENIA
+		/// -1 - ODJĘCIE WRITE
 		/// </summary>
 		public int Poziom { get; set; }
 		public long IdOBene { get; set; }

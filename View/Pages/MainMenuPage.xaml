@@ -55,12 +55,14 @@
             <ListView></ListView>
         </ScrollViewer>
 
-        <DataGrid x:Name="HistoryTable" Grid.Row="2" Grid.Column="1" Margin="5" AutoGenerateColumns="False">
+        <DataGrid x:Name="HistoryTable" Grid.Row="2" Grid.Column="1" Margin="5" AutoGenerateColumns="False" SelectionMode="Single" 
+                  CommandManager.PreviewExecuted="DriversDataGrid_PreviewDeleteCommandHandler">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Data" Width="*" IsReadOnly="True" Binding="{Binding Data}"/>
-                <DataGridTextColumn Header="Tytuł" Width="3*" IsReadOnly="True" Binding="{Binding Tytul}"/>
-                <DataGridTextColumn Header="Kategoria" Width="2*" IsReadOnly="True" Binding="{Binding Path=IdK, Converter={StaticResource idK2Category}}"/>
-                <DataGridTextColumn Header="Kwota" Width="2*" IsReadOnly="True" Binding="{Binding Path=Kwota, Converter={StaticResource double2Currency}}"/>
+                <DataGridTextColumn Header="Data" Width="*"  Binding="{Binding Data}"/>
+                <DataGridTextColumn Header="Tytuł" Width="3*" Binding="{Binding Tytul}"/>
+                <DataGridComboBoxColumn Header="Kategoria" x:Name="DataGridComboBoxColumn" Width="2*" SelectedValueBinding="{Binding Path=IdK, Converter={StaticResource idK2Category}}"/>
+                <DataGridTextColumn Header="Kwota" Width="2*" Binding="{Binding Path=Kwota, Converter={StaticResource double2Currency}}" />
+                <DataGridTextColumn Header="Opis" Width="*" Binding="{Binding Opis}" />
             </DataGrid.Columns>
             <DataGrid.RowDetailsTemplate>
                 <DataTemplate>

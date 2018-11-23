@@ -26,7 +26,7 @@ namespace ISBD.ModelView.State.LogicStates
 
 		private LoggedinStatePushParameters Parameters { get; set; }
 
-		private List<UprawnienieModel> Permissions
+		public List<UprawnienieModel> Permissions
 		{
 			get
 			{
@@ -55,7 +55,7 @@ namespace ISBD.ModelView.State.LogicStates
 						userPermissions.Any(permission => permission.IdOD == user.IdO)).ToList();
 				}
 
-				var bannedUsers = userPermissions.Where(permission => permission.Poziom < 0).Select(p => p.IdOD).ToList();
+				var bannedUsers = userPermissions.Where(permission => permission.Poziom < UprawnienieModel.WRITE_BAN).Select(p => p.IdOD).ToList();
 
 				allPermissionsUsers = allPermissionsUsers.Where(user => bannedUsers.Contains(user.IdO) == false).ToList();
 
@@ -67,6 +67,19 @@ namespace ISBD.ModelView.State.LogicStates
 			}
 		}
 
+		public List<KategoriaModel> Categories
+		{
+			get
+			{
+				Database.Database.Instance.Connect();
+
+				var categories = Database.Database.Instance.SelectAll<KategoriaModel>().ToList();
+
+				Database.Database.Instance.Dispose();
+				return categories;
+			}
+		}
+
 		public List<TransakcjaModel> GetUserTransactions(OsobaModel user)
 		{
 			Database.Database.Instance.Connect();
@@ -75,6 +88,27 @@ namespace ISBD.ModelView.State.LogicStates
 
 			Database.Database.Instance.Dispose();
 			return allUserTransactions.ToList();
+		}
+
+		public bool CanWriteToUser(OsobaModel other)
+		{
+			if (IsAdmin)
+			{
+				bool val = Permissions.Where(p => p.IdOD == other.IdO).All(p => p.Poziom > UprawnienieModel.WRITE_BAN);
+				return val;
+			}
+			else
+			{
+				bool val = Permissions.Where(p => p.IdOD == other.IdO).Any(p => p.Poziom == UprawnienieModel.WRITE_ALLOW);
+				return val;
+			}
+		}
+
+		public void AddTransaction(TransakcjaModel trans)
+		{
+			Database.Database.Instance.Connect();
+			Database.Database.Instance.Insert(trans);
+			Database.Database.Instance.Dispose();
 		}
 
 		public override void Push(StatePushParameters pushParameters)

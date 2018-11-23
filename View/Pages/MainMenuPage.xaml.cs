@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 using System.Windows.Media;
 using ISBD.Model;
 using ISBD.ModelView.State;
@@ -17,14 +20,19 @@ namespace ISBD.View.Pages
 	public partial class MainMenuPage : Page, IMainMenu
 	{
 		private Action<OsobaModel> OnSelectionChange;
+		private Action<AddingNewItemEventArgs> OnItemAdd;
+		private Action<HashSet<TransakcjaModel>> OnDelete;
 
 		public MainMenuPage()
 		{
 			InitializeComponent();
+			
 			UsersViewsChooser.SelectionChanged += (sender, e) =>
 			{
 				OnSelectionChange?.Invoke((OsobaModel)UsersViewsChooser.SelectedItem);
 			};
+
+			HistoryTable.AddingNewItem += (sender, e) => { OnItemAdd?.Invoke(e); SortDataGrid(HistoryTable, 0, ListSortDirection.Descending); };
 		}
 
 		public void RegisterForSelectedUserChange(Action<OsobaModel> selectionAction)
@@ -35,6 +43,26 @@ namespace ISBD.View.Pages
 		public void UnregisterForSelectedUserChange(Action<OsobaModel> selectionAction)
 		{
 			OnSelectionChange -= selectionAction;
+		}
+
+		public void RegisterForAddingNewItem(Action<AddingNewItemEventArgs> newItemAction)
+		{
+			OnItemAdd += newItemAction;
+		}
+
+		public void UnregisterForAddingNewItem(Action<AddingNewItemEventArgs> newItemAction)
+		{
+			OnItemAdd -= newItemAction;
+		}
+
+		public void RegisterForDeleteRows(Action<HashSet<TransakcjaModel>> deleteRowsAction)
+		{
+			OnDelete += deleteRowsAction;
+		}
+
+		public void UnregisterForDeleteRows(Action<HashSet<TransakcjaModel>> deleteRowsAction)
+		{
+			OnDelete -= deleteRowsAction;
 		}
 
 		public List<TransakcjaModel> Transactions
@@ -49,6 +77,52 @@ namespace ISBD.View.Pages
 				UsersViewsChooser.ItemsSource = value;
 				UsersViewsChooser.SelectedIndex = 0;
 			}
+		}
+
+		public List<string> Categories
+		{
+			set => DataGridComboBoxColumn.ItemsSource = value;
+		}
+		public bool CanAdd
+		{
+			set => HistoryTable.CanUserAddRows = value;
+		}
+
+		public bool CanDelete { set => HistoryTable.CanUserDeleteRows = value; }
+
+		public bool CanEdit { set => HistoryTable.IsReadOnly = !value; }
+
+		private void DriversDataGrid_PreviewDeleteCommandHandler(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (e.Command == DataGrid.DeleteCommand)
+			{
+				e.Handled = true;
+				if (MessageBox.Show("Na pewno chcesz usunąć daną transakcję?", "Potwierdz!", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+				{
+					OnDelete?.Invoke( new HashSet<TransakcjaModel>(HistoryTable.SelectedCells.ToList().Select(cell => (TransakcjaModel)cell.Item)));
+				}
+			}
+		}
+
+		public static void SortDataGrid(DataGrid dataGrid, int columnIndex = 0, ListSortDirection sortDirection = ListSortDirection.Ascending)
+		{
+			var column = dataGrid.Columns[columnIndex];
+
+			// Clear current sort descriptions
+			dataGrid.Items.SortDescriptions.Clear();
+
+			// Add the new sort description
+			dataGrid.Items.SortDescriptions.Add(new SortDescription(column.SortMemberPath, sortDirection));
+
+			// Apply sort
+			foreach (var col in dataGrid.Columns)
+			{
+				col.SortDirection = null;
+			}
+			column.SortDirection = sortDirection;
+
+			// Refresh items to display sort
+			dataGrid.Items.Refresh();
 		}
 	}
 
@@ -96,7 +170,13 @@ namespace ISBD.View.Pages
 
 		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			throw new NotImplementedException();
+			Database.Database.Instance.Connect();
+
+			string categoryName = (string)value;
+			var category = Database.Database.Instance.SelectAll<KategoriaModel>().FirstOrDefault(cat => cat.Nazwa == categoryName);
+
+			Database.Database.Instance.Dispose();
+			return category.IdK;
 		}
 	}
 
