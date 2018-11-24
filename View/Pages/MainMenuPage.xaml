@@ -51,9 +51,57 @@
             <Button Grid.Column="4" Margin="5" x:Name="CategoriesButton" Content="Kategorie" />
         </Grid>
 
-        <ScrollViewer x:Name="MonthScrollViewer" Grid.Row="2" Grid.Column="0" Margin="5">
-            <ListView></ListView>
-        </ScrollViewer>
+        <Border Grid.Row="2" Grid.Column="0" Background="#FF688CAF" BorderThickness="1" Margin="5">
+            <DockPanel Grid.Row="2" Grid.Column="0" Margin="1"  Background="White">
+                <DockPanel Dock="Top" Margin="15,0">
+                    <Button DockPanel.Dock="Left" HorizontalAlignment="Left" Background="{x:Null}" BorderBrush="{x:Null}">
+                        <Polygon Points="10,15 0,8 10,0" Stroke="Black"/>
+                    </Button>
+                    <Button DockPanel.Dock="Right" HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}">
+                        <Polygon Points="0,15 10,8 0,0" Stroke="Black"/>
+                    </Button>
+                    <TextBlock Text="Październik" TextAlignment="Center" />
+                </DockPanel>
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Text="Przychody" Grid.Row="0" Grid.Column="1"/>
+                    <TextBlock Text="15000zł" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right"/>
+                    <TextBlock Text="Wydatki" Grid.Row="1" Grid.Column="1"/>
+                    <TextBlock Text="8320zł" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right"/>
+                    <Border Height="1" BorderThickness="0,1,0,0" BorderBrush="#FF454546" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,15,0" />
+                    <TextBlock Text="Saldo" Grid.Row="3" Grid.Column="1"/>
+                    <TextBlock Text="8320zł" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right"/>
+                    <Border Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Height="10" Margin="-15,5" CornerRadius="8">
+                        <Border.Background>
+                            <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                <GradientStop x:Name="IncomesSlider" Color="#FF74FF00" Offset="0.74"/>
+                                <GradientStop x:Name="ExpensesSlider" Color="#FFFF5100" Offset="0.77"/>
+                            </LinearGradientBrush>
+                        </Border.Background>
+                    </Border>
+                </Grid>
+                <Border Height="1" DockPanel.Dock="Top" BorderThickness="0,1,0,0" BorderBrush="#FF454546" Margin="15,0" />
+                <ScrollViewer x:Name="MonthScrollViewer" VerticalScrollBarVisibility="Auto">
+                    <ListView>
+
+                    </ListView>
+                </ScrollViewer>
+
+            </DockPanel>
+        </Border>
+
 
         <DataGrid x:Name="HistoryTable" Grid.Row="2" Grid.Column="1" Margin="5" AutoGenerateColumns="False" SelectionMode="Single" 
                   CommandManager.PreviewExecuted="DriversDataGrid_PreviewDeleteCommandHandler">
