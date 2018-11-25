@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -10,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using ISBD.Model;
 using ISBD.ModelView.State;
+using ISBD.ModelView.State.LogicStates;
 using ISBD.Utils;
 
 namespace ISBD.View.Pages
@@ -92,6 +94,40 @@ namespace ISBD.View.Pages
 
 		public bool CanEdit { set => HistoryTable.IsReadOnly = !value; }
 
+		public Button PreviousMonthButton => PreviousMonth;
+
+		public Button NextMonthButton => NextMonth;
+		public void SetMonthSummary(string monthName, double income, double expense)
+		{
+			MonthName.Text = monthName;
+			IncomeText.Text = string.Format(CultureInfo.CurrentUICulture, "{0:C2}", income);
+			ExpenseText.Text = string.Format(CultureInfo.CurrentUICulture, "{0:C2}", expense);
+			BalanceText.Text = string.Format(CultureInfo.CurrentUICulture, "{0:C2}", income - expense);
+			if (expense == 0)
+			{
+				IncomesSlider.Offset = 1;
+				ExpensesSlider.Offset = 1;
+			}
+			else if (income == 0)
+			{
+				IncomesSlider.Offset = 0;
+				ExpensesSlider.Offset = 0;
+			}
+			else
+			{
+				double val = expense / (income);
+				double incomeVal = Math.Max(0, Math.Min(1, val - 0.01));
+				double expenseVal = Math.Max(0, Math.Min(1, val + 0.01));
+				IncomesSlider.Offset = incomeVal;
+				ExpensesSlider.Offset = expenseVal;
+			}
+		}
+
+		public void SetMonthList(List<CategorySummary> categories)
+		{
+			MonthList.ItemsSource = categories;
+		}
+
 		private void DriversDataGrid_PreviewDeleteCommandHandler(object sender, ExecutedRoutedEventArgs e)
 		{
 			if (e.Command == DataGrid.DeleteCommand)
@@ -150,7 +186,16 @@ namespace ISBD.View.Pages
 
 		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			throw new NotImplementedException();
+			string input = (string) value;
+			if (string.IsNullOrWhiteSpace(input)) return false;
+			const string Numbers = "0123456789.,";
+			var numberBuilder = new StringBuilder();
+			foreach (char c in input)
+			{
+				if (Numbers.IndexOf(c) > -1)
+					numberBuilder.Append(c);
+			}
+			return double.Parse(numberBuilder.ToString().Replace(',','.'));
 		}
 	}
 

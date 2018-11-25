@@ -48,7 +48,7 @@ namespace ISBD.Model.Tests
 		private void InsertSymbole()
 		{
 			Database.Database.Instance.Connect();
-			List<SymbolModel> uprawnienia = new List<SymbolModel>()
+			List<SymbolModel> symbole = new List<SymbolModel>()
 			{
 				new SymbolModel(){Kolor = Color.FromArgb(255, 69,169,255)}, //6
 				new SymbolModel(){Kolor = Color.FromArgb(255, 255, 0, 0)}, //2
@@ -58,7 +58,7 @@ namespace ISBD.Model.Tests
 				new SymbolModel(){Kolor = Color.FromArgb(255, 255,255,0)}, //6
 			};
 
-			uprawnienia.ForEach(uprawnienie => Database.Database.Instance.Insert(uprawnienie));
+			symbole.ForEach(symbol => Database.Database.Instance.Insert(symbol));
 			Database.Database.Instance.Dispose();
 		}
 
