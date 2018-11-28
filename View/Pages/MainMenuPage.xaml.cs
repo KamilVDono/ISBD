@@ -85,10 +85,7 @@ namespace ISBD.View.Pages
 		{
 			set => DataGridComboBoxColumn.ItemsSource = value;
 		}
-		public bool CanAdd
-		{
-			set => HistoryTable.CanUserAddRows = value;
-		}
+		public bool CanAdd { set => HistoryTable.CanUserAddRows = value; }
 
 		public bool CanDelete { set => HistoryTable.CanUserDeleteRows = value; }
 

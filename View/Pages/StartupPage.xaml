@@ -9,6 +9,23 @@
       Title="StartupPage">
 
     <Grid>
-        <TextBlock x:Name="Txt" Text="Text1" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="6*"/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock x:Name="HelloMessage" Grid.Row="1" Text="Witaj Tadeusz (Tadeoeoeo)" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="48"/>
+            <Button x:Name="GoButton" Content="Kontunuj (15)" Grid.Row="2" Margin="90,15"/>
+            <Button x:Name="NotMe" Content="Zmień konto" Grid.Row="3" Margin="180,10"/>
+        </Grid>
+        <StackPanel Background="Black" x:Name="Logo" Visibility="Visible">
+            <TextBlock Text="ISBD - Aplikacja do śledzenia wydatków i tworzenia " FontSize="28" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                   Foreground="AliceBlue" Margin="45"/>
+            <Image Source="/ISBD;component/Assets/Logo/Log.png" Stretch="Fill" />
+
+        </StackPanel>
     </Grid>
 </Page>
