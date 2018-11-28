@@ -23,8 +23,8 @@
                     <ColumnDefinition Width="35"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="20"/>
-                    <RowDefinition Height="15"/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="18"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Name}"/>
                 <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Amount}" HorizontalAlignment="Right" TextAlignment="Right"/>
@@ -53,7 +53,9 @@
         <ComboBox x:Name="UsersViewsChooser" Grid.Row="0" Grid.Column="0" Margin="5,15">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Converter={StaticResource osobaModel2NameConverter}}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12" FontWeight="Bold"/>
+                    <Grid>
+                        <TextBlock Text="{Binding Converter={StaticResource osobaModel2NameConverter}}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
+                    </Grid>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
@@ -116,7 +118,13 @@
                 <DataGridTextColumn Header="Data" Width="*"  Binding="{Binding Data}"/>
                 <DataGridTextColumn Header="Tytuł" Width="3*" Binding="{Binding Tytul}"/>
                 <DataGridComboBoxColumn Header="Kategoria" x:Name="DataGridComboBoxColumn" Width="2*" SelectedValueBinding="{Binding Path=IdK, Converter={StaticResource idK2Category}}"/>
-                <DataGridTextColumn Header="Kwota" Width="2*" Binding="{Binding Path=Kwota, Converter={StaticResource double2Currency}}" />
+                <DataGridTextColumn Header="Kwota" Width="2*"  Binding="{Binding Path=Kwota, Converter={StaticResource double2Currency}}" >
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Right" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
                 <DataGridTextColumn Header="Opis" Width="*" Binding="{Binding Opis}" />
             </DataGrid.Columns>
             <DataGrid.RowDetailsTemplate>
