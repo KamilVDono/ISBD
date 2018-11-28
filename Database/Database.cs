@@ -99,7 +99,6 @@ namespace ISBD.Database
 
 		public async void SaveLastLogin(string login, string password)
 		{
-			if (string.IsNullOrEmpty(login) || string.IsNullOrEmpty(password)) return;
 			await Task.Run(() =>
 				{
 					bool edited = false;
