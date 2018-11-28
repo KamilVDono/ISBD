@@ -39,6 +39,7 @@ namespace ISBD.Model.Tests
 				new UprawnienieModel {IdOBene = 2, IdOD = 3, Poziom = -1},
 				new UprawnienieModel {IdOBene = 3, IdOD = 5, Poziom = 1},
 				new UprawnienieModel {IdOBene = 4, IdOD = 5, Poziom = 1},
+				new UprawnienieModel {IdOBene = 1, IdOD = 5, Poziom = -1},
 			};
 
 			uprawnienia.ForEach(uprawnienie => Database.Database.Instance.Insert(uprawnienie));
