@@ -16,7 +16,6 @@ namespace ISBD.ModelView.State
 	{
 		private const int ContinueTicks = 10;
 		private int TicksCount = 0;
-		private DispatcherTimer DispatcherTimer;
 
 		private OsobaModel LastUser
 		{
@@ -33,7 +32,7 @@ namespace ISBD.ModelView.State
 			Connector.LogoVisible = true;
 			Connector.NotMeButton.ClearClick();
 			Connector.NotMeButton.Click += GoToLogin;
-			StartDispatcher(LogoTick, 2);
+			DelayCall(LogoTick, 2);
 		}
 
 		private void GoToLogin(object sender, RoutedEventArgs e)
@@ -63,7 +62,7 @@ namespace ISBD.ModelView.State
 				Connector.ContinueButton.Click += (a, b) => LogIn();
 				Connector.ContinueButton.Content = $"Kontunuj ({ContinueTicks - TicksCount})";
 				Connector.HelloMessage = $"Witaj {LastUser.Imie} {LastUser.Nazwisko} ({LastUser.Login})";
-				StartDispatcher(ContinueTick, 1);
+				DelayCall(ContinueTick, 1);
 			}
 		}
 
@@ -85,14 +84,6 @@ namespace ISBD.ModelView.State
 				user = LastUser,
 				saveLogged = true
 			});
-		}
-
-		private void StartDispatcher(Action function, int interval)
-		{
-			DispatcherTimer = new System.Windows.Threading.DispatcherTimer();
-			DispatcherTimer.Tick += (a, b) => function();
-			DispatcherTimer.Interval = new TimeSpan(0, 0, interval);
-			DispatcherTimer.Start();
 		}
 	}
 }

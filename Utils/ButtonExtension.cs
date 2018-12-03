@@ -13,7 +13,7 @@ namespace ISBD.Utils
 	{
 		public static void ClearClick(this Button button)
 		{
-			FieldInfo f1 = typeof(Control).GetField("EventClick",
+			FieldInfo f1 = typeof(Button).GetField("Click",
 				BindingFlags.Static | BindingFlags.NonPublic);
 			object obj = f1?.GetValue(button);
 			PropertyInfo pi = button.GetType().GetProperty("Events",

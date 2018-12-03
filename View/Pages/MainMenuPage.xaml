@@ -50,7 +50,7 @@
             <ColumnDefinition Width="3*" MaxWidth="300"></ColumnDefinition>
             <ColumnDefinition Width="7*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <ComboBox x:Name="UsersViewsChooser" Grid.Row="0" Grid.Column="0" Margin="5,15">
+        <ComboBox x:Name="UsersViewsChooser" Grid.Row="0" Grid.Column="0" Margin="5,15" Background="{x:Null}" >
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>
@@ -62,8 +62,8 @@
         <TextBlock Grid.Row="0" Grid.Column="1" Text="Główne menu" FontWeight="Bold" FontSize="34" Margin="30,5" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" />
 
 
-        <Border Grid.Row="2" Grid.Column="0" Background="#FF688CAF" BorderThickness="1" Margin="5" Padding="0">
-            <DockPanel Grid.Row="2" Grid.Column="0" Margin="1"  Background="White">
+        <Border Grid.Row="2" Grid.Column="0" BorderThickness="1" Margin="5" Padding="0">
+            <DockPanel Grid.Row="2" Grid.Column="0" Margin="1" >
                 <DockPanel Dock="Top" Margin="15,5,15,5">
                     <Button x:Name="PreviousMonth" DockPanel.Dock="Left" Background="{x:Null}" BorderBrush="{x:Null}" Width="25">
                         <Polygon Points="10,15 0,8 10,0" Stroke="Black"/>
@@ -106,14 +106,14 @@
                 </Grid>
                 <Border Height="1" DockPanel.Dock="Top" BorderThickness="0,1,0,0" BorderBrush="#FF454546" Margin="15,0" />
                 <ScrollViewer x:Name="MonthScrollViewer" VerticalScrollBarVisibility="Auto">
-                    <ListView x:Name="MonthList" BorderBrush="{x:Null}" ItemTemplate="{StaticResource CategorySummaryItem}" HorizontalContentAlignment="Stretch"/>
+                    <ListView x:Name="MonthList" BorderBrush="{x:Null}" ItemTemplate="{StaticResource CategorySummaryItem}" HorizontalContentAlignment="Stretch" Background="{x:Null}"/>
                 </ScrollViewer>
 
             </DockPanel>
         </Border>
 
         <DataGrid x:Name="HistoryTable" Grid.Row="2" Grid.Column="1" Margin="5" AutoGenerateColumns="False" SelectionMode="Single" 
-                  CommandManager.PreviewExecuted="DriversDataGrid_PreviewDeleteCommandHandler" BorderBrush="#FF688CAF">
+                  CommandManager.PreviewExecuted="DriversDataGrid_PreviewDeleteCommandHandler" BorderBrush="#FF688CAF" Background="{x:Null}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Data" Width="*"  Binding="{Binding Data}"/>
                 <DataGridTextColumn Header="Tytuł" Width="3*" Binding="{Binding Tytul}"/>

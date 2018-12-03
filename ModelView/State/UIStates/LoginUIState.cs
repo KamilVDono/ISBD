@@ -13,10 +13,10 @@ namespace ISBD.ModelView.State
 		public override void StartState()
 		{
 			base.StartState();
-			Connector.LoginButton.ClearClick();
+			Connector.LoginButton.Click -= Login;
 			Connector.LoginButton.Click += Login;
 
-			Connector.RegisterButton.ClearClick();
+			Connector.RegisterButton.Click -= Register;
 			Connector.RegisterButton.Click += Register;
 
 			Connector.Logins = GetLogins();
