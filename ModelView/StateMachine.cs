@@ -71,6 +71,7 @@ namespace ISBD.ModelView
 				{
 					UIStatesStack.Pop().StopState();
 				}
+				state.ResumeState();
 				return true;
 			}
 
@@ -82,6 +83,7 @@ namespace ISBD.ModelView
 			if (UIStatesStack.Count > 1)
 			{
 				UIStatesStack.Pop().StopState();
+				UIStatesStack.Peek().ResumeState();
 			}
 			System.Console.Error.WriteLine("There is only one state in stack, can not pop this");
 		}
@@ -138,7 +140,6 @@ namespace ISBD.ModelView
 		{
 			if (PopUIUntil(state))
 			{
-				state.ResumeState();
 			}
 			else
 			{
