@@ -1,20 +1,24 @@
-﻿<Page x:Class="ISBD.View.Pages.MainMenuPage"
+﻿<Page
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ISBD.View.Pages"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
+        xmlns:treeData="clr-namespace:ISBD.Model"
+        x:Class="ISBD.View.Pages.MainMenuPage"
       mc:Ignorable="d" 
-      d:DesignHeight="600" d:DesignWidth="1200"
+      d:DesignHeight="1080" d:DesignWidth="1920"
       Title="MainMenuPage"
       >
 
     <Page.Resources>
-        <local:OsobaModel2NameConverter x:Key="osobaModel2NameConverter"></local:OsobaModel2NameConverter>
-        <local:Double2Currency x:Key="double2Currency"></local:Double2Currency>
-        <local:IdK2Category x:Key="idK2Category"></local:IdK2Category>
-        <local:Transaction2Color x:Key="transaction2Color"></local:Transaction2Color>
-        <local:Transaction2ColorForeground x:Key="transaction2ColorForeground"></local:Transaction2ColorForeground>
+        <local:OsobaModel2NameConverter x:Key="osobaModel2NameConverter"/>
+        <local:Double2Currency x:Key="double2Currency"/>
+        <local:IdK2Category x:Key="idK2Category"/>
+        <local:Transaction2Color x:Key="transaction2Color"/>
+        <local:Transaction2ColorForeground x:Key="transaction2ColorForeground"/>
         <DataTemplate x:Key="CategorySummaryItem">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -26,17 +30,24 @@
                     <RowDefinition Height="25"/>
                     <RowDefinition Height="18"/>
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Grid.Column="0" Text="{Binding Name}"/>
-                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Amount}" HorizontalAlignment="Right" TextAlignment="Right"/>
+                <TextBlock Style="{DynamicResource TextBlockStyled}" Grid.Row="0" Grid.Column="0" Text="{Binding Name}"/>
+                <TextBlock Style="{DynamicResource TextBlockStyled}" Grid.Row="0" Grid.Column="1" Text="{Binding Amount}" HorizontalAlignment="Right" TextAlignment="Right"/>
                 <Image Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Source="{Binding Icon}" Visibility="Visible"/>
                 <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="10" CornerRadius="1" Margin="10,5">
                     <Border.Background>
                         <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
                             <GradientStop Color="{Binding CategoryColor}" Offset="{Binding Percent}"/>
-                            <GradientStop Color="#FFFFFFFF" Offset="{Binding Percent}"/>
+                            <GradientStop Color="{DynamicResource MaterialDesign}" Offset="{Binding Percent}"/>
                         </LinearGradientBrush>
                     </Border.Background>
                 </Border>
+            </Grid>
+        </DataTemplate>
+        <DataTemplate x:Key="UsersCheckBoxTemplate">
+            <Grid>
+                <CheckBox Checked="UserCheckChanged" IsChecked="True">
+                    <TextBlock Text="{Binding Converter={StaticResource osobaModel2NameConverter}}" Style="{DynamicResource TextBlockStyled}"/>
+                </CheckBox>
             </Grid>
         </DataTemplate>
     </Page.Resources>
@@ -46,98 +57,242 @@
             <RowDefinition Height="1*" MaxHeight="60"/>
             <RowDefinition Height="8*"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*" MaxWidth="300"></ColumnDefinition>
-            <ColumnDefinition Width="7*"></ColumnDefinition>
-        </Grid.ColumnDefinitions>
-        <ComboBox x:Name="UsersViewsChooser" Grid.Row="0" Grid.Column="0" Margin="5,15" Background="{x:Null}" >
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <TextBlock Text="{Binding Converter={StaticResource osobaModel2NameConverter}}" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
-                    </Grid>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
-        <TextBlock Grid.Row="0" Grid.Column="1" Text="Główne menu" FontWeight="Bold" FontSize="34" Margin="30,5" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" />
+        <Grid Background="{DynamicResource MaterialDesignBackground}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="3*" MaxWidth="300"/>
+                <ColumnDefinition Width="7*"/>
+                <ColumnDefinition Width="*" MaxWidth="100"/>
+            </Grid.ColumnDefinitions>
+            <ComboBox x:Name="UsersViewsChooser" Grid.Row="0" Grid.Column="0" Margin="5,15">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid>
+                            <TextBlock Style="{DynamicResource TextBlockStyled}" Text="{Binding Converter={StaticResource osobaModel2NameConverter}}" Margin="5,1" FontWeight="Medium" FontStretch="Condensed" FontSize="16"/>
+                        </Grid>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+            <TextBlock Style="{DynamicResource TextBlockStyled}" Grid.Row="0" Grid.Column="1" Text="Główne menu" FontWeight="Medium" FontSize="34" Margin="30,5" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <Button x:Name="SettingsButton" Grid.Row="0" Grid.Column="2" Margin="5" Height="Auto" Background="{x:Null}" BorderBrush="{x:Null}">
+                <Viewbox Width="48" Height="48">
+                    <Canvas Width="24" Height="24">
+                        <Path Data="M12,15.5A3.5,3.5 0 0,1 8.5,12A3.5,3.5 0 0,1 12,8.5A3.5,3.5 0 0,1 15.5,12A3.5,3.5 0 0,1 12,15.5M19.43,12.97C19.47,12.65 19.5,12.33 19.5,12C19.5,11.67 19.47,11.34 19.43,11L21.54,9.37C21.73,9.22 21.78,8.95 21.66,8.73L19.66,5.27C19.54,5.05 19.27,4.96 19.05,5.05L16.56,6.05C16.04,5.66 15.5,5.32 14.87,5.07L14.5,2.42C14.46,2.18 14.25,2 14,2H10C9.75,2 9.54,2.18 9.5,2.42L9.13,5.07C8.5,5.32 7.96,5.66 7.44,6.05L4.95,5.05C4.73,4.96 4.46,5.05 4.34,5.27L2.34,8.73C2.21,8.95 2.27,9.22 2.46,9.37L4.57,11C4.53,11.34 4.5,11.67 4.5,12C4.5,12.33 4.53,12.65 4.57,12.97L2.46,14.63C2.27,14.78 2.21,15.05 2.34,15.27L4.34,18.73C4.46,18.95 4.73,19.03 4.95,18.95L7.44,17.94C7.96,18.34 8.5,18.68 9.13,18.93L9.5,21.58C9.54,21.82 9.75,22 10,22H14C14.25,22 14.46,21.82 14.5,21.58L14.87,18.93C15.5,18.67 16.04,18.34 16.56,17.94L19.05,18.95C19.27,19.03 19.54,18.95 19.66,18.73L21.66,15.27C21.78,15.05 21.73,14.78 21.54,14.63L19.43,12.97Z" Fill="{DynamicResource PrimaryHueDarkBrush}" />
+                    </Canvas>
+                </Viewbox>
+            </Button>
+        </Grid>
 
-
-        <Border Grid.Row="2" Grid.Column="0" BorderThickness="1" Margin="5" Padding="0">
-            <DockPanel Grid.Row="2" Grid.Column="0" Margin="1" >
-                <DockPanel Dock="Top" Margin="15,5,15,5">
-                    <Button x:Name="PreviousMonth" DockPanel.Dock="Left" Background="{x:Null}" BorderBrush="{x:Null}" Width="25">
-                        <Polygon Points="10,15 0,8 10,0" Stroke="Black"/>
-                    </Button>
-                    <Button x:Name="NextMonth" DockPanel.Dock="Right" Background="{x:Null}" BorderBrush="{x:Null}" Width="25">
-                        <Polygon Points="0,15 10,8 0,0" Stroke="Black"/>
-                    </Button>
-                    <TextBlock x:Name="MonthName" Text="Październik" TextAlignment="Center" />
-                </DockPanel>
-                <Border Height="1" DockPanel.Dock="Top" BorderThickness="0,1,0,0" BorderBrush="#FF454546" Margin="15,0" />
-                <Grid DockPanel.Dock="Top" Margin="0,5,0,0">
+        <dragablz:TabablzControl Grid.Row="1" FixedHeaderCount="3">
+            <TabItem >
+                <TabItem.Header>
+                    <TextBlock FontFamily="Roboto" FontWeight="Black" FontSize="14" Text="Podumowanie"/>
+                </TabItem.Header>
+                <Grid >
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*" MaxWidth="300"/>
+                        <ColumnDefinition Width="7*"/>
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Text="Przychody" Grid.Row="0" Grid.Column="1"/>
-                    <TextBlock x:Name="IncomeText" Text="15000zł" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right"/>
-                    <TextBlock Text="Wydatki" Grid.Row="1" Grid.Column="1"/>
-                    <TextBlock x:Name="ExpenseText" Text="8320zł" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right"/>
-                    <Border Height="1" BorderThickness="0,1,0,0" BorderBrush="#FF454546" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,15,0" />
-                    <TextBlock Text="Saldo" Grid.Row="3" Grid.Column="1"/>
-                    <TextBlock x:Name="BalanceText" Text="8320zł" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right"/>
-                    <Border Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Height="10" Margin="-15,5" CornerRadius="8">
-                        <Border.Background>
-                            <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
-                                <GradientStop x:Name="IncomesSlider" Color="#FF74FF00" Offset="0.74"/>
-                                <GradientStop x:Name="ExpensesSlider" Color="#FFFF5100" Offset="0.77"/>
-                            </LinearGradientBrush>
-                        </Border.Background>
-                    </Border>
+                    <materialDesign:Card Grid.Column="0" Margin="2" VerticalAlignment="Stretch" Background="{DynamicResource MaterialDesignDarkBackground}">
+                        <DockPanel >
+                            <DockPanel DockPanel.Dock="Top" Margin="10,5,10,5">
+                                <Button x:Name="PreviousMonth" DockPanel.Dock="Left" Style="{DynamicResource MaterialDesignFloatingActionButton}" RenderTransformOrigin="0.5,0.5">
+                                    <Button.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="0.6" ScaleY="0.6"/>
+                                            <SkewTransform/>
+                                            <RotateTransform/>
+                                            <TranslateTransform/>
+                                        </TransformGroup>
+                                    </Button.RenderTransform>
+                                    <Viewbox Width="48" Height="48">
+                                        <Canvas Width="24" Height="24">
+                                            <Path Data="M7,12L12,7V10H16V14H12V17L7,12M22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12A10,10 0 0,1 12,2A10,10 0 0,1 22,12M20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12Z" Fill="Black" />
+                                        </Canvas>
+                                    </Viewbox>
+                                </Button>
+                                <Button x:Name="NextMonth" DockPanel.Dock="Right" Style="{DynamicResource MaterialDesignFloatingActionButton}" RenderTransformOrigin="0.5,0.5" >
+                                    <Button.RenderTransform>
+                                        <TransformGroup>
+                                            <ScaleTransform ScaleX="0.6" ScaleY="0.6"/>
+                                            <SkewTransform/>
+                                            <RotateTransform/>
+                                            <TranslateTransform/>
+                                        </TransformGroup>
+                                    </Button.RenderTransform>
+                                    <Viewbox Width="48" Height="2485">
+                                        <Canvas Width="24" Height="24">
+                                            <Path Data="M17,12L12,17V14H8V10H12V7L17,12M2,12A10,10 0 0,1 12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22A10,10 0 0,1 2,12M4,12A8,8 0 0,0 12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12Z" Fill="Black" />
+                                        </Canvas>
+                                    </Viewbox>
+                                </Button>
+                                <TextBlock Style="{DynamicResource TextBlockStyled}" x:Name="MonthName" Text="Październik 2018" TextAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="20"/>
+                            </DockPanel>
+                            <Border Height="1" DockPanel.Dock="Top" BorderThickness="0,1,0,0" BorderBrush="#FFFFEB3B" Margin="15,0" />
+                            <materialDesign:Underline DockPanel.Dock="Top" Margin="15,0"/>
+                            <Grid DockPanel.Dock="Top" Margin="0,5,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Style="{DynamicResource TextBlockStyled}" Text="Przychody" Grid.Row="0" Grid.Column="1"/>
+                                <TextBlock Style="{DynamicResource TextBlockStyled}" x:Name="IncomeText" Text="15000zł" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right"/>
+                                <TextBlock Style="{DynamicResource TextBlockStyled}" Text="Wydatki" Grid.Row="1" Grid.Column="1"/>
+                                <TextBlock Style="{DynamicResource TextBlockStyled}" x:Name="ExpenseText" Text="8320zł" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right"/>
+                                <Border Height="1" BorderThickness="0,1,0,0" BorderBrush="#FFFFEB3B" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" Margin="0,0,15,0" />
+                                <TextBlock Style="{DynamicResource TextBlockStyled}" Text="Saldo" Grid.Row="3" Grid.Column="1"/>
+                                <TextBlock Style="{DynamicResource TextBlockStyled}" x:Name="BalanceText" Text="8320zł" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Right"/>
+                                <Border Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Height="10" Margin="-15,5" CornerRadius="8">
+                                    <Border.Background>
+                                        <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
+                                            <GradientStop x:Name="IncomesSlider" Color="#FF74FF00" Offset="0.74"/>
+                                            <GradientStop x:Name="ExpensesSlider" Color="#FFFF5100" Offset="0.77"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                            </Grid>
+                            <Border Height="1" DockPanel.Dock="Top" BorderThickness="0,1,0,0" BorderBrush="#FFFFEB3B" Margin="15,0" />
+                            <ScrollViewer x:Name="MonthScrollViewer" VerticalScrollBarVisibility="Auto">
+                                <ListView x:Name="MonthList" ItemTemplate="{StaticResource CategorySummaryItem}" HorizontalContentAlignment="Stretch"/>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </materialDesign:Card>
+
+                    <DataGrid x:Name="HistoryTable" Grid.Column="1" AutoGenerateColumns="False" SelectionMode="Single" 
+                        CommandManager.PreviewExecuted="DriversDataGrid_PreviewDeleteCommandHandler" Margin="2">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Data" Width="*"  Binding="{Binding Data}" />
+                            <DataGridTextColumn Header="Tytuł" Width="2*" Binding="{Binding Tytul}"/>
+                            <DataGridComboBoxColumn Header="Kategoria" x:Name="DataGridComboBoxColumn" Width="2*" SelectedValueBinding="{Binding IdK, Converter={StaticResource idK2Category}}"/>
+                            <DataGridTemplateColumn Header="Typ"  Width="72" >
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+
+                                        <Viewbox Width="30" Height="30" RenderTransformOrigin="0.5,0.5">
+                                            <Viewbox.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
+                                                    <SkewTransform/>
+                                                    <RotateTransform/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </Viewbox.RenderTransform>
+                                            <Canvas Width="24" Height="24">
+                                                <Ellipse Width="24" Height="24" Fill="{DynamicResource MaterialDesignCardBackground}" RenderTransformOrigin="-12, -12"/>
+                                                <Path Data="M3,4.27L4.28,3L21,19.72L19.73,21L16.06,17.33C15.44,18 14.54,18.55 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15H9C9,16.08 10.37,17 12,17C13.13,17 14.14,16.56 14.65,15.92L11.68,12.95C9.58,12.42 7,11.75 7,9C7,8.77 7,8.55 7.07,8.34L3,4.27M10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C11.63,7 11.28,7.05 10.95,7.13L9.4,5.58L10.5,5.18Z" Fill="Red" />
+                                            </Canvas>
+                                        </Viewbox>
+
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Kwota" Width="*"  Binding="{Binding Kwota, Converter={StaticResource double2Currency}}" >
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MaterialDesignBody1TextBlock}">
+                                        <Setter Property="HorizontalAlignment" Value="Right" />
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Opis" Width="5*" Binding="{Binding Opis}" />
+                        </DataGrid.Columns>
+                        <!--<DataGrid.RowDetailsTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Opis}" Margin="5" />
+                            </DataTemplate>
+                        </DataGrid.RowDetailsTemplate>-->
+                        <DataGrid.RowStyle>
+                            <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource MaterialDesignDataGridRow}">
+                                <Setter Property="Background" Value="{Binding Converter={StaticResource transaction2Color}}" />
+                                <Setter Property="Foreground" Value="{Binding Converter={StaticResource transaction2ColorForeground}}" />
+                            </Style>
+                        </DataGrid.RowStyle>
+                    </DataGrid>
                 </Grid>
-                <Border Height="1" DockPanel.Dock="Top" BorderThickness="0,1,0,0" BorderBrush="#FF454546" Margin="15,0" />
-                <ScrollViewer x:Name="MonthScrollViewer" VerticalScrollBarVisibility="Auto">
-                    <ListView x:Name="MonthList" BorderBrush="{x:Null}" ItemTemplate="{StaticResource CategorySummaryItem}" HorizontalContentAlignment="Stretch" Background="{x:Null}"/>
-                </ScrollViewer>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock FontFamily="Roboto" FontWeight="Black" FontSize="14" Text="Statystyki"/>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="3*" MaxWidth="300"/>
+                        <ColumnDefinition Width="7*"/>
+                    </Grid.ColumnDefinitions>
+                    <materialDesign:Card Grid.Column="0" Margin="2" VerticalAlignment="Stretch" Background="{DynamicResource MaterialDesignDarkBackground}">
+                        <Grid >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0">
+                                <TextBlock Text="Typ wykresu:" Style="{DynamicResource TextBlockStyled}" FontFamily="Robot" FontWeight="Medium" VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" Margin="0,15,0,0" />
+                                <ComboBox x:Name="StatsChartType" Margin="15, 5" >
+                                    <!--<DataTemplate>
+                                        <TextBlock Style="{DynamicResource TextBlockStyled}" />
+                                    </DataTemplate>-->
+                                </ComboBox>
+                                <Border Height="1" BorderThickness="0,1,0,0" BorderBrush="#FFFFEB3B" Margin="15,15" />
+                            </StackPanel>
 
-            </DockPanel>
-        </Border>
+                            <StackPanel Grid.Row="1" Margin="0,10,0,0">
+                                <TextBlock Text="Wybierz użytkowników:" Style="{DynamicResource TextBlockStyled}" FontFamily="Robot" FontWeight="Medium" VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" Margin="0,15,0,0" />
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="15,10,15,5">
+                                    <StackPanel>
+                                        <CheckBox x:Name="SelectAllNoneCheckbox" IsChecked="True">
+                                            <TextBlock Text="Zaznacz/odznacz wszystkich" Style="{DynamicResource TextBlockStyled}"/>
+                                        </CheckBox>
+                                        <ListView x:Name="StatsSelectUsersListView" ItemTemplate="{StaticResource UsersCheckBoxTemplate}" HorizontalContentAlignment="Stretch"/>
+                                    </StackPanel>
+                                </ScrollViewer>
+                                <Border Height="1" BorderThickness="0,1,0,0" BorderBrush="#FFFFEB3B" Margin="15,15"/>
+                            </StackPanel>
 
-        <DataGrid x:Name="HistoryTable" Grid.Row="2" Grid.Column="1" Margin="5" AutoGenerateColumns="False" SelectionMode="Single" 
-                  CommandManager.PreviewExecuted="DriversDataGrid_PreviewDeleteCommandHandler" BorderBrush="#FF688CAF" Background="{x:Null}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Data" Width="*"  Binding="{Binding Data}"/>
-                <DataGridTextColumn Header="Tytuł" Width="3*" Binding="{Binding Tytul}"/>
-                <DataGridComboBoxColumn Header="Kategoria" x:Name="DataGridComboBoxColumn" Width="2*" SelectedValueBinding="{Binding Path=IdK, Converter={StaticResource idK2Category}}"/>
-                <DataGridTextColumn Header="Kwota" Width="2*"  Binding="{Binding Path=Kwota, Converter={StaticResource double2Currency}}" >
-                    <DataGridTextColumn.ElementStyle>
-                        <Style TargetType="TextBlock">
-                            <Setter Property="HorizontalAlignment" Value="Right" />
-                        </Style>
-                    </DataGridTextColumn.ElementStyle>
-                </DataGridTextColumn>
-                <DataGridTextColumn Header="Opis" Width="*" Binding="{Binding Opis}" />
-            </DataGrid.Columns>
-            <DataGrid.RowDetailsTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Opis}" Margin="10" />
-                </DataTemplate>
-            </DataGrid.RowDetailsTemplate>
-            <DataGrid.RowStyle>
-                <Style TargetType="DataGridRow">
-                    <Setter Property="Background" Value="{Binding Converter={StaticResource transaction2Color}}" />
-                    <Setter Property="Foreground" Value="{Binding Converter={StaticResource transaction2ColorForeground}}" />
-                </Style>
-            </DataGrid.RowStyle>
-        </DataGrid>
+                            <StackPanel Grid.Row="2" Margin="0,10,0,5">
+                                <TextBlock Text="Wybierz kategorie:" Style="{DynamicResource TextBlockStyled}" FontFamily="Robot" FontWeight="Medium" VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" Margin="0,15,0,0" />
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                    <TreeView x:Name="CategoriesSelectListView">
+                                        <TreeView.Resources>
+                                            <HierarchicalDataTemplate DataType="{x:Type treeData:CategoryTreeData}" ItemsSource="{Binding Children}">
+                                                <CheckBox IsChecked="{Binding Selected, Mode=TwoWay}">
+                                                    <TextBlock Text="{Binding Category.Nazwa}" Style="{DynamicResource TextBlockStyled}"/>
+                                                </CheckBox>
+                                            </HierarchicalDataTemplate>
+                                            <HierarchicalDataTemplate DataType="{x:Type treeData:MainTreeCategoryData}" ItemsSource="{Binding Children}">
+                                                <CheckBox IsChecked="{Binding Selected, Mode=TwoWay}">
+                                                    <TextBlock Text="{Binding Name}" Style="{DynamicResource TextBlockStyled}"/>
+                                                </CheckBox>
+                                            </HierarchicalDataTemplate>
+                                        </TreeView.Resources>
+                                    </TreeView>
+                                </ScrollViewer>
+                                <Border Height="1" BorderThickness="0,1,0,0" BorderBrush="#FFFFEB3B" Margin="15,15"/>
+                            </StackPanel>
+                            <StackPanel Grid.Row="3"/>
+                        </Grid>
+                    </materialDesign:Card>
+
+                    <Canvas Grid.Column="1" Background="{DynamicResource MaterialDesignDarkBackground}" Margin="2" x:Name="ChartCanvas"/>
+                </Grid>
+            </TabItem>
+            <TabItem>
+                <TabItem.Header>
+                    <TextBlock FontFamily="Roboto" FontWeight="Black" FontSize="14" Text="Operacje"/>
+                </TabItem.Header>
+                <Grid />
+            </TabItem>
+        </dragablz:TabablzControl>
     </Grid>
 </Page>

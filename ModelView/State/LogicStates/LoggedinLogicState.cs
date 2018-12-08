@@ -158,14 +158,20 @@ namespace ISBD.ModelView.State.LogicStates
 			var allFromThisMonth =
 				allUserTransactions.Where(t => t.Data.Month == currentDate.Month && t.Data.Year == currentDate.Year).ToList();
 
+			double transactionsSum = allFromThisMonth.Sum(t => t.Kwota);
+
 			Database.Database.Instance.Connect();
 			var categorySummaries = Database.Database.Instance.SelectAll<KategoriaModel>().Select(cat =>
 			{
 				var symbol = Database.Database.Instance.SelectAll<SymbolModel>().FirstOrDefault(s => s.IdS == cat.IdS);
+				var categoryTransactions = allFromThisMonth.Where(t => t.IdK == cat.IdK);
+				var sum = categoryTransactions.Sum(t => t.Kwota);
 				return new CategorySummary()
 				{
-					Name = cat.Nazwa, Percent = Random.NextDouble(), Ico = symbol.Ikona, CategoryColor = symbol.Kolor,
-					Sum = allFromThisMonth.Where(t => t.IdK == cat.IdK).Sum(t => t.Kwota),
+					Name = cat.Nazwa,
+					Percent = (transactionsSum != 0 ? sum / transactionsSum + 0.001 : 0.001),
+					Ico = symbol.Ikona, CategoryColor = symbol.Kolor,
+					Sum = sum,
 				};
 			}).OrderByDescending(c => c.Sum).ToList();
 
@@ -185,5 +191,7 @@ namespace ISBD.ModelView.State.LogicStates
 		public double Percent { get; set; }
 
 		public Color CategoryColor { get; set; }
+
+		public List<CategorySummary> ChildrenCategorySummaries { get; set; }
 	}
 }

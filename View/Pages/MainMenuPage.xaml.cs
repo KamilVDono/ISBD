@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -12,6 +13,7 @@ using System.Windows.Media;
 using ISBD.Model;
 using ISBD.ModelView.State;
 using ISBD.ModelView.State.LogicStates;
+using ISBD.ModelView.State.UIStates;
 using ISBD.Utils;
 
 namespace ISBD.View.Pages
@@ -78,13 +80,29 @@ namespace ISBD.View.Pages
 			{
 				UsersViewsChooser.ItemsSource = value;
 				UsersViewsChooser.SelectedIndex = 0;
+				SetChartAvailableUsers(value);
 			}
+		}
+
+		private void SetChartAvailableUsers(List<OsobaModel> value)
+		{
+			StatsSelectUsersListView.ItemsSource = value;
 		}
 
 		public List<string> Categories
 		{
 			set => DataGridComboBoxColumn.ItemsSource = value;
 		}
+
+		public List<string> ChartTypes
+		{
+			set
+			{
+				StatsChartType.ItemsSource = value;
+				StatsChartType.SelectedIndex = 0;
+			}
+		}
+
 		public bool CanAdd { set => HistoryTable.CanUserAddRows = value; }
 
 		public bool CanDelete { set => HistoryTable.CanUserDeleteRows = value; }
@@ -94,6 +112,12 @@ namespace ISBD.View.Pages
 		public Button PreviousMonthButton => PreviousMonth;
 
 		public Button NextMonthButton => NextMonth;
+
+		public ObservableCollection<MainTreeCategoryData> CategoriesTree
+		{
+			set => CategoriesSelectListView.ItemsSource = value;
+		}
+
 		public void SetMonthSummary(string monthName, double income, double expense)
 		{
 			MonthName.Text = monthName;
@@ -156,6 +180,11 @@ namespace ISBD.View.Pages
 
 			// Refresh items to display sort
 			dataGrid.Items.Refresh();
+		}
+
+		private void UserCheckChanged(object sender, RoutedEventArgs e)
+		{
+			
 		}
 	}
 

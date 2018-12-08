@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using ISBD.Model;
 using ISBD.ModelView.State.LogicStates;
+using ISBD.ModelView.State.UIStates;
 
 namespace ISBD.ModelView.State
 {
@@ -39,5 +41,9 @@ namespace ISBD.ModelView.State
 		void SetMonthSummary(string monthName, double income, double expense);
 
 		void SetMonthList(List<CategorySummary> categories);
+
+		List<string> ChartTypes { set; }
+
+		ObservableCollection<MainTreeCategoryData> CategoriesTree { set; }
 	}
 }

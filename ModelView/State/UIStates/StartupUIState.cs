@@ -30,7 +30,7 @@ namespace ISBD.ModelView.State
 		{
 			base.StartState();
 			Connector.LogoVisible = true;
-			Connector.NotMeButton.ClearClick();
+			Connector.NotMeButton.Click -= GoToLogin;
 			Connector.NotMeButton.Click += GoToLogin;
 			DelayCall(LogoTick, 2);
 		}
@@ -58,8 +58,8 @@ namespace ISBD.ModelView.State
 			else
 			{
 				TicksCount = 0;
-				Connector.ContinueButton.ClearClick();
-				Connector.ContinueButton.Click += (a, b) => LogIn();
+				Connector.ContinueButton.Click -= LogIn;
+				Connector.ContinueButton.Click += LogIn;
 				Connector.ContinueButton.Content = $"Kontunuj ({ContinueTicks - TicksCount})";
 				Connector.HelloMessage = $"Witaj {LastUser.Imie} {LastUser.Nazwisko} ({LastUser.Login})";
 				DelayCall(ContinueTick, 1);
@@ -72,11 +72,11 @@ namespace ISBD.ModelView.State
 			Connector.ContinueButton.Content = $"Kontunuj ({ContinueTicks - TicksCount})";
 			if (TicksCount == ContinueTicks)
 			{
-				LogIn();
+				LogIn(null, null);
 			}
 		}
 
-		private void LogIn()
+		private void LogIn(object sender, RoutedEventArgs e)
 		{
 			DispatcherTimer.Stop();
 			StateMachine.Instance.PushState<LoggedinLogicState>(new LoggedinStatePushParameters()

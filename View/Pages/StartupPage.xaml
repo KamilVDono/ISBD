@@ -4,24 +4,20 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ISBD.View"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="StartupPage">
 
     <Grid>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="6*"/>
-                <RowDefinition Height="3*"/>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <TextBlock x:Name="HelloMessage" Grid.Row="1" Text="Witaj Tadeusz (Tadeoeoeo)" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="48"/>
-            <Button x:Name="GoButton" Content="Kontunuj (15)" Grid.Row="2" Margin="220,10"/>
-            <Button x:Name="NotMe" Content="Zmień konto" Grid.Row="3" Margin="300,10"/>
-        </Grid>
-        <StackPanel Background="Black" x:Name="Logo" Visibility="Visible">
+        <materialDesign:Card HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel>
+                <TextBlock Style="{DynamicResource TextBlockStyled}" x:Name="HelloMessage" Text="Witaj Tadeusz (Tadeoeoeo)" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="44" Margin="0,30,0,15"/>
+                <Button Style="{DynamicResource MaterialDesignRaisedDarkButton}" x:Name="GoButton" Content="Kontunuj (15)" Margin="220,25,220,15" Height="45"/>
+                <Button Style="{DynamicResource MaterialDesignFlatButton}" x:Name="NotMe" Content="Zmień konto" Margin="300,15"/>
+            </StackPanel>
+        </materialDesign:Card>
+        <StackPanel Background="Black" x:Name="Logo" Visibility="Collapsed">
             <TextBlock Text="ISBD - Aplikacja do śledzenia wydatków i tworzenia " FontSize="28" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
                    Foreground="AliceBlue" Margin="45"/>
             <Image Source="/ISBD;component/Assets/Logo/Log.png" Stretch="Fill" />

@@ -37,6 +37,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Dragablz, Version=0.0.3.203, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\Dragablz.0.0.3.203\lib\net45\Dragablz.dll</HintPath>
+    </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -121,6 +124,7 @@
     <Compile Include="ModelView\State\UIStates\MainMenuUIState.cs" />
     <Compile Include="ModelView\State\UIStates\StartupUIState.cs" />
     <Compile Include="ModelView\State\State.cs" />
+    <Compile Include="Model\CategoryTreeData.cs" />
     <Compile Include="Model\DataAccess.cs" />
     <Compile Include="Database\IDBInsertable.cs" />
     <Compile Include="Model\KategoriaModel.cs" />
@@ -129,7 +133,6 @@
     <Compile Include="Model\Tests\QueryTest.cs" />
     <Compile Include="Model\TransakcjaModel.cs" />
     <Compile Include="Model\UprawnienieModel.cs" />
-    <Compile Include="Utils\ButtonExtension.cs" />
     <Compile Include="Utils\ColorConverter.cs" />
     <Compile Include="Utils\Singleton.cs" />
     <Compile Include="View\Pages\LoginPage.xaml.cs">

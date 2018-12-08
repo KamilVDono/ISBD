@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -16,12 +17,18 @@ namespace ISBD.ModelView.State.UIStates
 	class MainMenuUIState : ConnectorState<IMainMenu, MainMenuPage>
 	{
 		private LoggedinLogicState LoggedinLogicState => StateMachine.Instance.GetStateInstance<LoggedinLogicState>();
+
 		private DateTime CurrentDate;
 
 		private string[] MonthNames =
 		{
 			"Styczeń", "Luty", "Marzec", "Kwiecień", "Maj", "Czerwiec", "Lipiec",
 			"Sierpień", "Wrzesień", "Październik", "Listopad", "Grudzień"
+		};
+
+		private string[] ChartTypes =
+		{
+			"Liniowy", "Kolumnowy", "Sterta powierzchniowa", "Sterta kolumnowa"
 		};
 
 		public override void StartState()
@@ -35,9 +42,9 @@ namespace ISBD.ModelView.State.UIStates
 
 		private void SetupConnector()
 		{
-			Connector.NextMonthButton.ClearClick();
+			Connector.NextMonthButton.Click -= NextMonth;
 			Connector.NextMonthButton.Click += NextMonth;
-			Connector.PreviousMonthButton.ClearClick();
+			Connector.PreviousMonthButton.Click -= PreviousMonth;
 			Connector.PreviousMonthButton.Click += PreviousMonth;
 
 			Connector.UnregisterForSelectedUserChange(UpdateUserView);
@@ -49,6 +56,9 @@ namespace ISBD.ModelView.State.UIStates
 			Connector.Categories = LoggedinLogicState.Categories.Select(cat => cat.Nazwa).ToList();
 			Connector.ValidUsers = LoggedinLogicState.ValidUsers;
 			Connector.Transactions = LoggedinLogicState.GetUserTransactions(LoggedinLogicState.CurrentSelectedUser);
+			Connector.ChartTypes = ChartTypes.ToList();
+
+			Connector.CategoriesTree = GetMainTreeCategoryData();
 
 			SetMonth();
 
@@ -67,10 +77,10 @@ namespace ISBD.ModelView.State.UIStates
 
 		private (string, double, double) GetCurrentMonthData()
 		{
-			return ($"{MonthNames[CurrentDate.Month-1]} {CurrentDate.Year}",
+			return ($"{MonthNames[CurrentDate.Month - 1]} {CurrentDate.Year}",
 					LoggedinLogicState.GetMonthIncomes(CurrentDate),
 					LoggedinLogicState.GetMonthExpenses(CurrentDate)
-					);
+				);
 		}
 
 		private void PreviousMonth(object sender, RoutedEventArgs e)
@@ -96,7 +106,7 @@ namespace ISBD.ModelView.State.UIStates
 				Tytul = "Transakcja"
 			};
 
-			LoggedinLogicState.AddTransaction((TransakcjaModel)args.NewItem);
+			LoggedinLogicState.AddTransaction((TransakcjaModel) args.NewItem);
 
 			SetMonth();
 		}
@@ -108,6 +118,97 @@ namespace ISBD.ModelView.State.UIStates
 			Connector.CanAdd = LoggedinLogicState.CanWriteToUser(selectedUser);
 
 			SetMonth();
+		}
+
+		private ObservableCollection<MainTreeCategoryData> GetMainTreeCategoryData()
+		{
+			var treeData = GetTreeCategoryData();
+
+			MainTreeCategoryData income = new MainTreeCategoryData()
+			{
+				Name = "Przychody",
+				Children = new ObservableCollection<CategoryTreeData>(),
+				OnSelectionChange = TreeSelectionChange
+			};
+
+			MainTreeCategoryData expenses = new MainTreeCategoryData()
+			{
+				Name = "Wydatki",
+				Children = new ObservableCollection<CategoryTreeData>(),
+				OnSelectionChange = TreeSelectionChange
+			};
+
+			foreach (var categoryTreeData in treeData)
+			{
+				if (categoryTreeData.Category.Rodzaj < 0)
+				{
+					expenses.Children.Add(categoryTreeData);
+					categoryTreeData.Parent = expenses;
+				}
+				else
+				{
+					income.Children.Add(categoryTreeData);
+					categoryTreeData.Parent = income;
+				}
+			}
+
+			return new ObservableCollection<MainTreeCategoryData>(){ expenses, income };
+		}
+
+		private ObservableCollection<CategoryTreeData> GetTreeCategoryData()
+		{
+			var categories = LoggedinLogicState.Categories;
+			var categoriesSet = new HashSet<KategoriaModel>(categories);
+
+			List<CategoryTreeData> treeData = categories.Where(cat => cat.IdKRodzic.HasValue == false).Select(cat =>
+				new CategoryTreeData()
+				{
+					Category = cat,
+					Children = new ObservableCollection<CategoryTreeData>(),
+					Parent = null,
+					OnSelectionChange = TreeSelectionChange
+				}).ToList();
+			treeData.ForEach(data => categoriesSet.Remove(data.Category));
+			treeData.ForEach(data => AssignChildren(data, categoriesSet));
+
+			return new ObservableCollection<CategoryTreeData>(treeData);
+		}
+
+		private void AssignChildren(CategoryTreeData data, HashSet<KategoriaModel> categories)
+		{
+			if (categories == null) return;
+			var childrenRaw = categories.Where(cat => cat.IdKRodzic == data.Category.IdK).ToList();
+			foreach (var model in childrenRaw)
+			{
+				categories.Remove(model);
+			}
+
+			var children = childrenRaw.Select(cat => new CategoryTreeData()
+			{
+				Category = cat,
+				Parent = data,
+				Children = new ObservableCollection<CategoryTreeData>(),
+				OnSelectionChange = TreeSelectionChange
+			});
+
+			children.ToList().ForEach(dataa =>
+			{
+				AssignChildren(dataa, categories);
+				data.Children.Add(dataa);
+			});
+		}
+
+		private void TreeSelectionChange(TreeData data)
+		{
+			foreach (var categoryTreeData in data.Children)
+			{
+				categoryTreeData.Selected = data.Selected;
+			}
+
+			if (data.Parent != null && data.Parent.Selected != data.Selected && data.Parent.Children.All(child => child.Selected == data.Selected))
+			{
+				data.Parent.Selected = data.Selected;
+			}
 		}
 	}
 }
