@@ -5,7 +5,7 @@ using ISBD.Database;
 
 namespace ISBD.Model
 {
-	public class TransakcjaModel : Database.IDBInsertable, IDBTableItem, IDBSelectable
+	public class TransakcjaModel : Database.IDBInsertable, IDBTableItem, IDBSelectable, IDBUpdateable
 	{
 		public long IdT { get; set; }
 		public double Kwota { get; set; }
@@ -36,6 +36,10 @@ namespace ISBD.Model
 		}
 
 		public string Table => "Transakcje";
+
+		public string IndexName => "IdK";
+		public long Index => IdT;
+
 		public bool Init(SQLiteDataReader reader)
 		{
 			if (reader.HasRows == false) return false;

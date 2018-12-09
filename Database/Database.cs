@@ -67,6 +67,14 @@ namespace ISBD.Database
 			command.ExecuteNonQuery();
 		}
 
+		public void Update<T>(T updateable) where T : IDBTableItem, IDBInsertable, IDBUpdateable
+		{
+			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+			var command = _connection.CreateCommand();
+			command.CommandText = $"UPDATE {updateable.Table} SET {GetUpdateSQL(updateable)} WHERE {updateable.IndexName} = {updateable.Index};";
+			command.ExecuteNonQuery();
+		}
+
 		public (string login, string password) GetLastLoginData()
 		{
 			string line = null;
@@ -151,6 +159,25 @@ namespace ISBD.Database
 			names.Append(")");
 			values.Append(")");
 			return $"{names.ToString()} VALUES {values.ToString()}";
+		}
+
+		private string GetUpdateSQL(IDBInsertable updateable)
+		{
+			StringBuilder sqlBuilder = new StringBuilder();
+			IList<NameValuePair> namedValuePairs = updateable.NamedValues;
+			for (int i = 0; i < namedValuePairs.Count; i++)
+			{
+				if (i != 0)
+				{
+					sqlBuilder.Append(", ");
+				}
+
+				sqlBuilder.Append(namedValuePairs[i].Name);
+				sqlBuilder.Append(" = ");
+				sqlBuilder.Append(namedValuePairs[i].Value);
+			}
+
+			return sqlBuilder.ToString();
 		}
 
 		private SQLiteDataReader SelectAll(string table)
