@@ -42,8 +42,6 @@ namespace ISBD.ModelView.State
 
 		void SetMonthList(List<CategorySummary> categories);
 
-		List<string> ChartTypes { set; }
-
-		ObservableCollection<MainTreeCategoryData> CategoriesTree { set; }
+		ChartParams ChartParams { set; }
 	}
 }

@@ -15,6 +15,8 @@ using ISBD.ModelView.State;
 using ISBD.ModelView.State.LogicStates;
 using ISBD.ModelView.State.UIStates;
 using ISBD.Utils;
+using LiveCharts;
+using LiveCharts.Wpf;
 
 namespace ISBD.View.Pages
 {
@@ -38,6 +40,8 @@ namespace ISBD.View.Pages
 
 			HistoryTable.AddingNewItem += (sender, e) => { OnItemAdd?.Invoke(e); SortDataGrid(HistoryTable, 0, ListSortDirection.Descending); };
 		}
+
+		#region Callbacks
 
 		public void RegisterForSelectedUserChange(Action<OsobaModel> selectionAction)
 		{
@@ -69,6 +73,10 @@ namespace ISBD.View.Pages
 			OnDelete -= deleteRowsAction;
 		}
 
+		#endregion Callbacks
+
+		#region Setters
+
 		public List<TransakcjaModel> Transactions
 		{
 			set => HistoryTable.ItemsSource = value;
@@ -80,27 +88,12 @@ namespace ISBD.View.Pages
 			{
 				UsersViewsChooser.ItemsSource = value;
 				UsersViewsChooser.SelectedIndex = 0;
-				SetChartAvailableUsers(value);
 			}
-		}
-
-		private void SetChartAvailableUsers(List<OsobaModel> value)
-		{
-			StatsSelectUsersListView.ItemsSource = value;
 		}
 
 		public List<string> Categories
 		{
 			set => DataGridComboBoxColumn.ItemsSource = value;
-		}
-
-		public List<string> ChartTypes
-		{
-			set
-			{
-				StatsChartType.ItemsSource = value;
-				StatsChartType.SelectedIndex = 0;
-			}
 		}
 
 		public bool CanAdd { set => HistoryTable.CanUserAddRows = value; }
@@ -109,14 +102,45 @@ namespace ISBD.View.Pages
 
 		public bool CanEdit { set => HistoryTable.IsReadOnly = !value; }
 
+		public ChartParams ChartParams
+		{
+			set
+			{
+				ChartUserTreeView.ItemsSource = value.UsersTree;
+				CategoriesSelectListView.ItemsSource = value.CategoriesTree;
+
+				FromChartDate.SelectedDate = value.FromDateTime;
+				FromChartDate.SelectedDateChanged += (_, _2)=>
+				{
+					value.FromDateTime = FromChartDate.SelectedDate.Value;
+					value.OnDataChange(null,null);
+				};
+
+				ToChartDate.SelectedDate = value.ToDateTime;
+				ToChartDate.SelectedDateChanged += (_,_2)=>
+				{
+					value.ToDateTime = ToChartDate.SelectedDate.Value;
+					value.OnDataChange(null, null);
+				};
+
+				StatsChartType.ItemsSource = value.ChartTypes;
+				StatsChartType.SelectedIndex = value.SelectedType;
+				StatsChartType.SelectionChanged += (_,_2) =>
+				{
+					value.SelectedType = StatsChartType.SelectedIndex;
+					value.OnDataChange(null,null);
+				};
+
+				MainChart.Series = value.SeriesCollection;
+				//AxisYChart.Labels = value.Labels;
+			}
+		}
+
+		#endregion Setters
+
 		public Button PreviousMonthButton => PreviousMonth;
 
 		public Button NextMonthButton => NextMonth;
-
-		public ObservableCollection<MainTreeCategoryData> CategoriesTree
-		{
-			set => CategoriesSelectListView.ItemsSource = value;
-		}
 
 		public void SetMonthSummary(string monthName, double income, double expense)
 		{
@@ -181,12 +205,9 @@ namespace ISBD.View.Pages
 			// Refresh items to display sort
 			dataGrid.Items.Refresh();
 		}
-
-		private void UserCheckChanged(object sender, RoutedEventArgs e)
-		{
-			
-		}
 	}
+
+	#region Converters
 
 	public class OsobaModel2NameConverter : IValueConverter
 	{
@@ -212,7 +233,7 @@ namespace ISBD.View.Pages
 
 		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			string input = (string) value;
+			string input = (string)value;
 			if (string.IsNullOrWhiteSpace(input)) return false;
 			const string Numbers = "0123456789.,";
 			var numberBuilder = new StringBuilder();
@@ -221,7 +242,7 @@ namespace ISBD.View.Pages
 				if (Numbers.IndexOf(c) > -1)
 					numberBuilder.Append(c);
 			}
-			return double.Parse(numberBuilder.ToString().Replace(',','.'));
+			return double.Parse(numberBuilder.ToString().Replace(',', '.'));
 		}
 	}
 
@@ -231,7 +252,7 @@ namespace ISBD.View.Pages
 		{
 			Database.Database.Instance.Connect();
 
-			long idK = (long) value;
+			long idK = (long)value;
 			var category = Database.Database.Instance.SelectAll<KategoriaModel>().FirstOrDefault(cat => cat.IdK == idK);
 
 			Database.Database.Instance.Dispose();
@@ -255,7 +276,7 @@ namespace ISBD.View.Pages
 	{
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			if(value is TransakcjaModel == false) return new SolidColorBrush(Colors.WhiteSmoke);
+			if (value is TransakcjaModel == false) return new SolidColorBrush(Colors.WhiteSmoke);
 			Database.Database.Instance.Connect();
 
 			TransakcjaModel tr = (TransakcjaModel)value;
@@ -313,4 +334,33 @@ namespace ISBD.View.Pages
 			throw new NotImplementedException();
 		}
 	}
+
+	public class RodzajIncome2Visibility : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+		{
+			return (int) value == 1 ? Visibility.Visible : Visibility.Hidden;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	public class RodzajExpense2Visibility : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+		{
+			return (int)value == -1 ? Visibility.Visible : Visibility.Hidden;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+		{
+			throw new NotImplementedException();
+		}
+	}
+
+	#endregion Converters
+
 }
