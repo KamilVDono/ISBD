@@ -37,7 +37,7 @@ namespace ISBD.Model
 
 		public string Table => "Transakcje";
 
-		public string IndexName => "IdK";
+		public string IndexName => "IdT";
 		public long Index => IdT;
 
 		public bool Init(SQLiteDataReader reader)

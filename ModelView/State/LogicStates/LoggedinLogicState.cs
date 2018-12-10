@@ -112,7 +112,14 @@ namespace ISBD.ModelView.State.LogicStates
 		public void AddTransaction(TransakcjaModel trans)
 		{
 			Database.Database.Instance.Connect();
-			Database.Database.Instance.Insert(trans);
+			trans.IdT = Database.Database.Instance.Insert(trans);
+			Database.Database.Instance.Dispose();
+		}
+
+		public void UpdateTransaction(TransakcjaModel trans)
+		{
+			Database.Database.Instance.Connect();
+			Database.Database.Instance.Update(trans);
 			Database.Database.Instance.Dispose();
 		}
 

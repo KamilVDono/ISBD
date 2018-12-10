@@ -27,6 +27,19 @@
                 <Setter Property="Foreground" Value="{StaticResource PrimaryHueDarkBrush}" />
                 <Setter Property="FontFamily" Value="Roboto" />
             </Style>
+
+            <Style x:Key="DatePickerMy" TargetType="{x:Type DatePickerTextBox}" BasedOn="{StaticResource MaterialDesignDatePicker}">
+
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate>
+                            <TextBox x:Name="PART_TextBox"
+                                     Text="{Binding Path=SelectedDate, StringFormat='dd.MM.yyyy', 
+                                RelativeSource={RelativeSource AncestorType={x:Type DatePicker}}}" />
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

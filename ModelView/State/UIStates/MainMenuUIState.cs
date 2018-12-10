@@ -61,6 +61,9 @@ namespace ISBD.ModelView.State.UIStates
 			Connector.UnregisterForAddingNewItem(AddNewItem);
 			Connector.RegisterForAddingNewItem(AddNewItem);
 
+			Connector.UnregisterForEdit(UpdateTransactionInDB);
+			Connector.RegisterForEdit(UpdateTransactionInDB);
+
 			Connector.Categories = LoggedinLogicState.Categories.Select(cat => cat.Nazwa).ToList();
 			Connector.ValidUsers = LoggedinLogicState.ValidUsers;
 			Connector.Transactions = LoggedinLogicState.GetUserTransactions(LoggedinLogicState.CurrentSelectedUser);
@@ -71,7 +74,12 @@ namespace ISBD.ModelView.State.UIStates
 
 			Connector.CanDelete = false;
 			Connector.CanEdit = true;
-			Connector.CanAdd = true;
+		}
+
+		private void UpdateTransactionInDB(TransakcjaModel transaction)
+		{
+			StateMachine.Instance.GetStateInstance<LoggedinLogicState>().UpdateTransaction(transaction);
+			SetMonth();
 		}
 
 		private void SetMonth()
@@ -117,6 +125,7 @@ namespace ISBD.ModelView.State.UIStates
 			LoggedinLogicState.AddTransaction((TransakcjaModel) args.NewItem);
 
 			SetMonth();
+			UpdateUserView();
 		}
 
 		private void UpdateUserView(OsobaModel selectedUser)

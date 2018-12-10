@@ -59,12 +59,13 @@ namespace ISBD.Database
 			return returnList;
 		}
 
-		public void Insert<T>(T insertable) where T: IDBTableItem, IDBInsertable
+		public long Insert<T>(T insertable) where T: IDBTableItem, IDBInsertable
 		{
 			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 			var command = _connection.CreateCommand();
 			command.CommandText = $"INSERT INTO {insertable.Table} {GetInsertSQL(insertable)};";
 			command.ExecuteNonQuery();
+			return _connection.LastInsertRowId;
 		}
 
 		public void Update<T>(T updateable) where T : IDBTableItem, IDBInsertable, IDBUpdateable

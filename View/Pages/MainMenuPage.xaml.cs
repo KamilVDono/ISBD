@@ -5,12 +5,14 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using ISBD.Model;
+using ISBD.ModelView;
 using ISBD.ModelView.State;
 using ISBD.ModelView.State.LogicStates;
 using ISBD.ModelView.State.UIStates;
@@ -28,6 +30,7 @@ namespace ISBD.View.Pages
 		private Action<OsobaModel> OnSelectionChange;
 		private Action<AddingNewItemEventArgs> OnItemAdd;
 		private Action<HashSet<TransakcjaModel>> OnDelete;
+		private Action<TransakcjaModel> OnEdit;
 
 		public MainMenuPage()
 		{
@@ -39,6 +42,12 @@ namespace ISBD.View.Pages
 			};
 
 			HistoryTable.AddingNewItem += (sender, e) => { OnItemAdd?.Invoke(e); SortDataGrid(HistoryTable, 0, ListSortDirection.Descending); };
+			AddTransaction.Click += (_, _2) =>
+			{
+				OnItemAdd?.Invoke(new AddingNewItemEventArgs(){NewItem = new TransakcjaModel()});
+				SortDataGrid(HistoryTable, 0, ListSortDirection.Descending);
+			}; 
+			HistoryTable.CanUserAddRows = false;
 		}
 
 		#region Callbacks
@@ -73,6 +82,16 @@ namespace ISBD.View.Pages
 			OnDelete -= deleteRowsAction;
 		}
 
+		public void RegisterForEdit(Action<TransakcjaModel> editAction)
+		{
+			OnEdit += editAction;
+		}
+
+		public void UnregisterForEdit(Action<TransakcjaModel> editAction)
+		{
+			OnEdit -= editAction;
+		}
+
 		#endregion Callbacks
 
 		#region Setters
@@ -96,7 +115,7 @@ namespace ISBD.View.Pages
 			set => DataGridComboBoxColumn.ItemsSource = value;
 		}
 
-		public bool CanAdd { set => HistoryTable.CanUserAddRows = value; }
+		public bool CanAdd { set => AddTransaction.IsEnabled = value; }
 
 		public bool CanDelete { set => HistoryTable.CanUserDeleteRows = value; }
 
@@ -204,6 +223,12 @@ namespace ISBD.View.Pages
 
 			// Refresh items to display sort
 			dataGrid.Items.Refresh();
+		}
+
+		private async void HistoryTable_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+		{
+			await Task.Delay(TimeSpan.FromSeconds(0.5));
+			OnEdit?.Invoke((TransakcjaModel)e.Row.Item);
 		}
 	}
 
@@ -362,5 +387,4 @@ namespace ISBD.View.Pages
 	}
 
 	#endregion Converters
-
 }

@@ -163,9 +163,32 @@
                     </materialDesign:Card>
 
                     <DataGrid x:Name="HistoryTable" Grid.Column="1" AutoGenerateColumns="False" SelectionMode="Single" 
-                        CommandManager.PreviewExecuted="DriversDataGrid_PreviewDeleteCommandHandler" Margin="2">
+                        CommandManager.PreviewExecuted="DriversDataGrid_PreviewDeleteCommandHandler" Margin="2,2,2,65" CellEditEnding="HistoryTable_CellEditEnding">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="Data" Width="*"  Binding="{Binding Data}" />
+                            <!--<DataGridTemplateColumn Header="Data">
+                                --><!-- editing template --><!--
+                                <DataGridTemplateColumn.CellEditingTemplate>
+                                    <DataTemplate>
+                                        <DatePicker
+                                            SelectedDate="{Binding Data}"
+                                            BorderThickness="0">
+                                        </DatePicker>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellEditingTemplate>
+                                --><!-- standard template --><!--
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <TextBlock >
+                                            <TextBlock.Text>
+                                                <Binding Path="Data"
+                                                         ConverterCulture="pl-PL"
+                                                         StringFormat="{}{0:d}"/>
+                                            </TextBlock.Text>
+                                        </TextBlock>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>-->
+                            <DataGridTextColumn Header="Data" Width="*"  Binding="{Binding Path=Data, ConverterCulture=pl-PL}" />
                             <DataGridTextColumn Header="Tytuł" Width="2*" Binding="{Binding Tytul}"/>
                             <DataGridComboBoxColumn Header="Kategoria" x:Name="DataGridComboBoxColumn" Width="2*" SelectedValueBinding="{Binding IdK, Converter={StaticResource idK2Category}}"/>
                             <DataGridTemplateColumn Header="Typ"  Width="72">
@@ -225,6 +248,9 @@
                             </Style>
                         </DataGrid.RowStyle>
                     </DataGrid>
+                    <Button x:Name="AddTransaction" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,15,15" Height="38">
+                        <materialDesign:PackIcon Kind="Add"></materialDesign:PackIcon>
+                    </Button>
                 </Grid>
             </TabItem>
             <TabItem>
@@ -245,8 +271,8 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0">
-                                <DatePicker x:Name="FromChartDate" Text="Od" Margin="15,15,15,0" FirstDayOfWeek="Monday" SelectedDateFormat="Long"/>
-                                <DatePicker x:Name="ToChartDate" Text="Do" Margin="15,15,15,0" FirstDayOfWeek="Monday" SelectedDateFormat="Long"/>
+                                <DatePicker x:Name="FromChartDate" Text="Od" Margin="15,15,15,0" FirstDayOfWeek="Monday"/>
+                                <DatePicker x:Name="ToChartDate" Text="Do" Margin="15,15,15,0" FirstDayOfWeek="Monday"/>
                                 <Border Height="1" BorderThickness="0,1,0,0" BorderBrush="#FFFFEB3B" Margin="15,15" />
                             </StackPanel>
                             <StackPanel Grid.Row="1">

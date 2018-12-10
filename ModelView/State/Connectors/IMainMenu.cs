@@ -22,6 +22,10 @@ namespace ISBD.ModelView.State
 
 		void UnregisterForDeleteRows(Action<HashSet<TransakcjaModel>> deleteRowsAction);
 
+		void   RegisterForEdit(Action<TransakcjaModel> editAction);
+
+		void UnregisterForEdit(Action<TransakcjaModel> editAction);
+
 		List<TransakcjaModel> Transactions { set; }
 
 		List<OsobaModel> ValidUsers { set; }
