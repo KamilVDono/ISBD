@@ -121,6 +121,9 @@
     <Compile Include="Database\IDBTableItem.cs" />
     <Compile Include="Database\IDBUpdateable.cs" />
     <Compile Include="Database\NameValuePair.cs" />
+    <Compile Include="ModelView\Collections\ObservableCategoriesCollection.cs" />
+    <Compile Include="ModelView\Collections\ObservableTransactionsCollection.cs" />
+    <Compile Include="ModelView\Collections\TrulyObservableCollection.cs" />
     <Compile Include="ModelView\StateMachine.cs" />
     <Compile Include="ModelView\State\Connectors\ILoginUI.cs" />
     <Compile Include="ModelView\State\Connectors\IMainMenu.cs" />
@@ -135,6 +138,8 @@
     <Compile Include="Model\DataAccess.cs" />
     <Compile Include="Database\IDBInsertable.cs" />
     <Compile Include="Model\KategoriaModel.cs" />
+    <Compile Include="Model\ObservableModel.cs" />
+    <Compile Include="ModelView\Collections\ObservableSymbolsCollection.cs" />
     <Compile Include="Model\OsobaModel.cs" />
     <Compile Include="Model\SymbolModel.cs" />
     <Compile Include="Model\Tests\QueryTest.cs" />

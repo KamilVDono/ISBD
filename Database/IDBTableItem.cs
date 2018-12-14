@@ -9,5 +9,6 @@ namespace ISBD.Database
 	public interface IDBTableItem
 	{
 		string Table { get; }
+		long Index { get; set; }
 	}
 }

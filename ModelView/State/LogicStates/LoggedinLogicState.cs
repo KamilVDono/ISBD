@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using ISBD.Database;
 using ISBD.Model;
 using ISBD.ModelView.State.UIStates;
 
@@ -64,7 +65,7 @@ namespace ISBD.ModelView.State.LogicStates
 
 				allPermissionsUsers = allPermissionsUsers.Where(user => bannedUsers.Contains(user.IdO) == false).ToList();
 
-				if(allPermissionsUsers.Contains(Parameters.user)) allPermissionsUsers.Add(Parameters.user);
+				if (allPermissionsUsers.Contains(Parameters.user)) allPermissionsUsers.Add(Parameters.user);
 
 
 				Database.Database.Instance.Dispose();
@@ -79,6 +80,19 @@ namespace ISBD.ModelView.State.LogicStates
 				Database.Database.Instance.Connect();
 
 				var categories = Database.Database.Instance.SelectAll<KategoriaModel>().ToList();
+
+				Database.Database.Instance.Dispose();
+				return categories;
+			}
+		}
+
+		public List<SymbolModel> Symbols
+		{
+			get
+			{
+				Database.Database.Instance.Connect();
+
+				var categories = Database.Database.Instance.SelectAll<SymbolModel>().ToList();
 
 				Database.Database.Instance.Dispose();
 				return categories;
@@ -109,17 +123,17 @@ namespace ISBD.ModelView.State.LogicStates
 			}
 		}
 
-		public void AddTransaction(TransakcjaModel trans)
+		public void InsertToDB<T>(T trans) where T : IDBTableItem, IDBInsertable
 		{
 			Database.Database.Instance.Connect();
-			trans.IdT = Database.Database.Instance.Insert(trans);
+			trans.Index = Database.Database.Instance.Insert(trans);
 			Database.Database.Instance.Dispose();
 		}
 
-		public void UpdateTransaction(TransakcjaModel trans)
+		public void UpdateDBEntry<T>(T model) where T : IDBTableItem, IDBInsertable, IDBUpdateable
 		{
 			Database.Database.Instance.Connect();
-			Database.Database.Instance.Update(trans);
+			Database.Database.Instance.Update(model);
 			Database.Database.Instance.Dispose();
 		}
 
@@ -135,7 +149,7 @@ namespace ISBD.ModelView.State.LogicStates
 			{
 				Database.Database.Instance.SaveLastLogin(LoggedInPerson.Login, LoggedInPerson.Haslo);
 			}
-			
+
 			StateMachine.Instance.PushState<MainMenuUIState>(null);
 		}
 
@@ -177,7 +191,8 @@ namespace ISBD.ModelView.State.LogicStates
 				{
 					Name = cat.Nazwa,
 					Percent = (transactionsSum != 0 ? sum / transactionsSum + 0.001 : 0.001),
-					Ico = symbol.Ikona, CategoryColor = symbol.Kolor,
+					Ico = symbol.Ikona,
+					CategoryColor = symbol.Kolor,
 					Sum = sum,
 				};
 			}).OrderByDescending(c => c.Sum).ToList();

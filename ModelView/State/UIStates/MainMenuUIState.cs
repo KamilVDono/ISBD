@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -14,6 +15,7 @@ using ISBD.ModelView.State.LogicStates;
 using ISBD.Utils;
 using ISBD.View.Pages;
 using LiveCharts;
+using LiveCharts.Defaults;
 using LiveCharts.Wpf;
 
 namespace ISBD.ModelView.State.UIStates
@@ -58,15 +60,18 @@ namespace ISBD.ModelView.State.UIStates
 			Connector.UnregisterForSelectedUserChange(UpdateUserView);
 			Connector.RegisterForSelectedUserChange(UpdateUserView);
 
-			Connector.UnregisterForAddingNewItem(AddNewItem);
-			Connector.RegisterForAddingNewItem(AddNewItem);
-
-			Connector.UnregisterForEdit(UpdateTransactionInDB);
-			Connector.RegisterForEdit(UpdateTransactionInDB);
-
-			Connector.Categories = LoggedinLogicState.Categories.Select(cat => cat.Nazwa).ToList();
+			UpdateCategories();
 			Connector.ValidUsers = LoggedinLogicState.ValidUsers;
-			Connector.Transactions = LoggedinLogicState.GetUserTransactions(LoggedinLogicState.CurrentSelectedUser);
+
+			var categoriesCollection = new ObservableCategoriesCollection(LoggedinLogicState.Categories);
+			categoriesCollection.CollectionChanged += CategoriesCollectionChanged;
+			Connector.Categories = categoriesCollection;
+
+			var symbolsCollection = new ObservableSymbolsCollection(LoggedinLogicState.Symbols);
+			symbolsCollection.CollectionChanged += SymbolsCollectionChanged;
+			Connector.Symbols = symbolsCollection;
+
+			UpdateUserView();
 
 			Connector.ChartParams = GetChartParams();
 
@@ -74,12 +79,6 @@ namespace ISBD.ModelView.State.UIStates
 
 			Connector.CanDelete = false;
 			Connector.CanEdit = true;
-		}
-
-		private void UpdateTransactionInDB(TransakcjaModel transaction)
-		{
-			StateMachine.Instance.GetStateInstance<LoggedinLogicState>().UpdateTransaction(transaction);
-			SetMonth();
 		}
 
 		private void SetMonth()
@@ -111,23 +110,6 @@ namespace ISBD.ModelView.State.UIStates
 			SetMonth();
 		}
 
-		private void AddNewItem(AddingNewItemEventArgs args)
-		{
-			args.NewItem = new TransakcjaModel()
-			{
-				Data = DateTime.Now,
-				IdO = LoggedinLogicState.CurrentSelectedUser.IdO,
-				IdK = LoggedinLogicState.Categories[0].IdK,
-				Kwota = 0,
-				Tytul = "Transakcja"
-			};
-
-			LoggedinLogicState.AddTransaction((TransakcjaModel) args.NewItem);
-
-			SetMonth();
-			UpdateUserView();
-		}
-
 		private void UpdateUserView(OsobaModel selectedUser)
 		{
 			LoggedinLogicState.CurrentSelectedUser = selectedUser;
@@ -136,14 +118,120 @@ namespace ISBD.ModelView.State.UIStates
 
 		private void UpdateUserView()
 		{
-			Connector.Transactions = LoggedinLogicState.GetUserTransactions(LoggedinLogicState.CurrentSelectedUser).
-				Where(t => t.Data.Month == CurrentDate.Month && t.Data.Year == CurrentDate.Year).ToList(); ;
+			var transactions = new ObservableTransactionsCollection(LoggedinLogicState.GetUserTransactions(LoggedinLogicState.CurrentSelectedUser).
+				Where(t => t.Data.Month == CurrentDate.Month && t.Data.Year == CurrentDate.Year).ToList());
+			transactions.CollectionChanged += TransactionsChanged;
+			Connector.Transactions = transactions;
 			Connector.CanAdd = LoggedinLogicState.CanWriteToUser(LoggedinLogicState.CurrentSelectedUser);
 		}
 
-		private ChartParams GetChartParams()
+		private void UpdateCategories()
 		{
-			if (CharParamsCache != null)
+			Connector.CategoriesNames = LoggedinLogicState.Categories.Select(cat => cat.Nazwa).ToList();
+		}
+
+		private void TransactionsChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == NotifyCollectionChangedAction.Add)
+			{
+				foreach (object newItem in e.NewItems)
+				{
+					var newTransaction = (TransakcjaModel) newItem;
+					newTransaction.RaiseEvents = false;
+					newTransaction.Data = DateTime.Now;
+					newTransaction.IdO = LoggedinLogicState.CurrentSelectedUser.IdO;
+					newTransaction.IdK = LoggedinLogicState.Categories[0].IdK;
+					newTransaction.Kwota = 0;
+					newTransaction.Tytul = "Transakcja";
+					newTransaction.RaiseEvents = true;
+					LoggedinLogicState.InsertToDB(newTransaction);
+				}
+				SetMonth();
+				UpdateChart();
+			}
+			else if (e.Action == NotifyCollectionChangedAction.Replace)
+			{
+				foreach (object newItem in e.NewItems)
+				{
+					var newTransaction = (TransakcjaModel)newItem;
+					LoggedinLogicState.UpdateDBEntry(newTransaction);
+				}
+				SetMonth();
+				UpdateChart();
+			}
+			else
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		private void CategoriesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == NotifyCollectionChangedAction.Add)
+			{
+				foreach (object newItem in e.NewItems)
+				{
+					var newCategory = (KategoriaModel)newItem;
+					newCategory.RaiseEvents = false;
+					newCategory.Nazwa = "Kategoria";
+					newCategory.Rodzaj = -1;
+					newCategory.IdS = LoggedinLogicState.Symbols[0].IdS;
+					newCategory.RaiseEvents = true;
+					LoggedinLogicState.InsertToDB(newCategory);
+				}
+				SetMonth();
+				UpdateCategories();
+				Connector.ChartParams = GetChartParams(true);
+			}
+			else if (e.Action == NotifyCollectionChangedAction.Replace)
+			{
+				foreach (object newItem in e.NewItems)
+				{
+					var newCategory = (KategoriaModel)newItem;
+					LoggedinLogicState.UpdateDBEntry(newCategory);
+				}
+				SetMonth();
+				UpdateCategories();
+				Connector.ChartParams = GetChartParams(true);
+			}
+			else
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		private void SymbolsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (e.Action == NotifyCollectionChangedAction.Add)
+			{
+				foreach (object newItem in e.NewItems)
+				{
+					var newSymbol = (SymbolModel)newItem;
+					newSymbol.Kolor = Color.FromRgb(255, 215, 64);
+					newSymbol.Ikona = "";
+					newSymbol.RaiseEvents = true;
+					LoggedinLogicState.InsertToDB(newSymbol);
+				}
+				SetMonth();
+			}
+			else if (e.Action == NotifyCollectionChangedAction.Replace)
+			{
+				foreach (object newItem in e.NewItems)
+				{
+					var newSymbol = (SymbolModel)newItem;
+					LoggedinLogicState.UpdateDBEntry(newSymbol);
+				}
+				SetMonth();
+			}
+			else
+			{
+				throw new NotImplementedException();
+			}
+		}
+
+		private ChartParams GetChartParams(bool force = false)
+		{
+			if (CharParamsCache != null && force == false)
 			{
 				return CharParamsCache;
 			}
@@ -160,7 +248,7 @@ namespace ISBD.ModelView.State.UIStates
 			CharParamsCache.OnChartChange -= UpdateChart;
 			CharParamsCache.OnChartChange += UpdateChart;
 
-			UpdateChartSeries();
+			UpdateChart();
 
 			return CharParamsCache;
 		}
@@ -284,20 +372,26 @@ namespace ISBD.ModelView.State.UIStates
 
 		private void UpdateChart()
 		{
-			UpdateChartSeries();
-		}
-
-		private void UpdateChartSeries()
-		{
-			var validUser = CharParamsCache.UsersTree[0].Children.Where(u=>u.Selected).Select(u => ((UserTreeData) u).User);
+			var validUser = CharParamsCache.UsersTree[0].Children.Where(u => u.Selected).Select(u => ((UserTreeData)u).User);
 			var validCategories = ObtainCategories(CharParamsCache.CategoriesTree);
 			Database.Database.Instance.Connect();
 
 			var allSymbols = Database.Database.Instance.SelectAll<SymbolModel>();
 
-			var validTransaction = Database.Database.Instance.SelectAll<TransakcjaModel>().
-				Where(trans => trans.Data >= CharParamsCache.FromDateTime && trans.Data <= CharParamsCache.ToDateTime).
-				Where(trans => validUser.Any(user => user.IdO == trans.IdO));
+			int days = (int)(CharParamsCache.ToDateTime - CharParamsCache.FromDateTime).TotalDays;
+			DateTime startDay = new DateTime(CharParamsCache.FromDateTime.Year, CharParamsCache.FromDateTime.Month,
+				CharParamsCache.FromDateTime.Day);
+
+			List<List<TransakcjaModel>> validTransactions = new List<List<TransakcjaModel>>(days);
+
+			for (int i = 0; i < days; i++)
+			{
+				validTransactions.Add(new List<TransakcjaModel>());
+				validTransactions[i].AddRange(Database.Database.Instance.SelectAll<TransakcjaModel>().
+					Where(trans => trans.Data.Year == startDay.Year && trans.Data.Month == startDay.Month && trans.Data.Day == startDay.Day).
+					Where(trans => validUser.Any(user => user.IdO == trans.IdO)));
+				startDay = startDay.AddDays(1);
+			}
 
 			Database.Database.Instance.Dispose();
 
@@ -306,20 +400,30 @@ namespace ISBD.ModelView.State.UIStates
 
 			validCategories.ForEach(category =>
 			{
-				double sum = validTransaction.Where(trans => trans.IdK == category.IdK).Sum(t => t.Kwota);
+				startDay = new DateTime(CharParamsCache.FromDateTime.Year, CharParamsCache.FromDateTime.Month,
+					CharParamsCache.FromDateTime.Day);
+
 				var column = ChartTypes[CharParamsCache.SelectedType].GetChartSeries();
 				column.Title = category.Nazwa;
-				column.Values = new ChartValues<double>(){sum};
-				column.Fill = new SolidColorBrush(allSymbols.First(s => s.IdS == category.IdS).Kolor);
+				column.Values = new ChartValues<DateTimePoint>();
+				//column.Fill = new SolidColorBrush(allSymbols.First(s => s.IdS == category.IdS).Kolor);
 				column.Stroke = new SolidColorBrush(allSymbols.First(s => s.IdS == category.IdS).Kolor);
 				column.DataLabels = true;
 				column.LabelPoint = (_) => category.Nazwa;
+
+				for (int i = 0; i < days; i++)
+				{
+					double sum = validTransactions[i].Where(trans => trans.IdK == category.IdK).Sum(t => t.Kwota);
+					column.Values.Add(new DateTimePoint(startDay, sum));
+					startDay = startDay.AddDays(1);
+				}
+
+
 				CharParamsCache.SeriesCollection.Add(column);
 			});
-
 		}
 
-		private List<KategoriaModel> ObtainCategories(ObservableCollection<TreeData> categoriesTree)
+		private static List<KategoriaModel> ObtainCategories(ObservableCollection<TreeData> categoriesTree)
 		{
 			List<KategoriaModel> categories = new List<KategoriaModel>();
 			categoriesTree.ToList().ForEach(cat =>
@@ -373,6 +477,16 @@ namespace ISBD.ModelView.State.UIStates
 		public Series GetChartSeries()
 		{
 			return (Series) Activator.CreateInstance(Type);
+		}
+
+		public int MaxXPoints()
+		{
+			return -1;
+		}
+
+		public bool Fill()
+		{
+			return false;
 		}
 	}
 }

@@ -11,11 +11,50 @@ using ISBD.Utils;
 
 namespace ISBD.Model
 {
-	public class SymbolModel : Database.IDBInsertable, IDBTableItem, IDBSelectable
+	public class SymbolModel : ObservableModel, Database.IDBInsertable, IDBTableItem, IDBSelectable, IDBUpdateable
 	{
-		public long IdS { get; set; }
-		public Color Kolor { get; set; }
-		public string Ikona { get; set; }
+		private long _IdS;
+
+		public long IdS
+		{
+			get => _IdS;
+			set
+			{
+				if (_IdS != value)
+				{
+					_IdS = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
+
+		private Color _Kolor;
+		public Color Kolor
+		{
+			get => _Kolor;
+			set
+			{
+				if (_Kolor != value)
+				{
+					_Kolor = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
+
+		private string _Ikona;
+		public string Ikona
+		{
+			get => _Ikona;
+			set
+			{
+				if (_Ikona == null || _Ikona.Equals(value) == false)
+				{
+					_Ikona = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
 
 		public IList<NameValuePair> NamedValues
 		{
@@ -33,6 +72,8 @@ namespace ISBD.Model
 			}
 		}
 		public string Table => "Symbole";
+		public long Index { get => IdS; set => IdS = value; }
+
 		public bool Init(SQLiteDataReader reader)
 		{
 			if (reader.HasRows == false) return false;
@@ -61,5 +102,7 @@ namespace ISBD.Model
 		{
 			return $"IdS: {IdS} | Kolor: {Kolor} | Ikona: {Ikona}";
 		}
+
+		public string IndexName { get => "IdS"; }
 	}
 }

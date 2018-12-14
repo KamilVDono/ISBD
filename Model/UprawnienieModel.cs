@@ -40,6 +40,8 @@ namespace ISBD.Model
 			}
 		}
 		public string Table => "Uprawnienia";
+		public long Index { get => IdU; set => IdU = value; }
+
 		public bool Init(SQLiteDataReader reader)
 		{
 			if (reader.HasRows == false) return false;

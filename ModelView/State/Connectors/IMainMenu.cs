@@ -14,29 +14,23 @@ namespace ISBD.ModelView.State
 
 		void UnregisterForSelectedUserChange(Action<OsobaModel> selectionAction);
 
-		void   RegisterForAddingNewItem(Action<AddingNewItemEventArgs> newItemAction);
+		ObservableTransactionsCollection Transactions { set; }
 
-		void UnregisterForAddingNewItem(Action<AddingNewItemEventArgs> newItemAction);
+		ObservableCategoriesCollection Categories { set; }
 
-		void   RegisterForDeleteRows(Action<HashSet<TransakcjaModel>> deleteRowsAction);
-
-		void UnregisterForDeleteRows(Action<HashSet<TransakcjaModel>> deleteRowsAction);
-
-		void   RegisterForEdit(Action<TransakcjaModel> editAction);
-
-		void UnregisterForEdit(Action<TransakcjaModel> editAction);
-
-		List<TransakcjaModel> Transactions { set; }
+		ObservableSymbolsCollection Symbols { set; }
 
 		List<OsobaModel> ValidUsers { set; }
 
-		List<string> Categories { set; }
+		List<string> CategoriesNames { set; }
 
 		bool CanAdd { set; }
 
 		bool CanDelete { set; }
 
 		bool CanEdit { set; }
+
+		ChartParams ChartParams { set; }
 
 		Button PreviousMonthButton { get; }
 
@@ -45,7 +39,5 @@ namespace ISBD.ModelView.State
 		void SetMonthSummary(string monthName, double income, double expense);
 
 		void SetMonthList(List<CategorySummary> categories);
-
-		ChartParams ChartParams { set; }
 	}
 }

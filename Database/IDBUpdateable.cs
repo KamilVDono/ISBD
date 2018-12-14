@@ -9,6 +9,5 @@ namespace ISBD.Database
 	public interface IDBUpdateable
 	{
 		string IndexName { get; }
-		long Index { get; }
 	}
 }

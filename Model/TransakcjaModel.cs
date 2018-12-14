@@ -1,19 +1,99 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.SQLite;
+using System.Runtime.CompilerServices;
 using ISBD.Database;
 
 namespace ISBD.Model
 {
-	public class TransakcjaModel : Database.IDBInsertable, IDBTableItem, IDBSelectable, IDBUpdateable
+	public class TransakcjaModel : ObservableModel, Database.IDBInsertable, IDBTableItem, IDBSelectable, IDBUpdateable
 	{
 		public long IdT { get; set; }
-		public double Kwota { get; set; }
-		public string Tytul { get; set; }
-		public string Opis { get; set; }
-		public DateTime Data { get; set; }
-		public long IdO { get; set; }
-		public long IdK { get; set; }
+
+		private double _Kwota;
+		public double Kwota
+		{
+			get => _Kwota;
+			set
+			{
+				if (_Kwota != value)
+				{
+					_Kwota = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
+
+		private string _Tytul;
+		public string Tytul
+		{
+			get => _Tytul;
+			set
+			{
+				if (_Tytul == null || _Tytul.Equals(value) == false)
+				{
+					_Tytul = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
+
+		private string _Opis;
+		public string Opis
+		{
+			get => _Opis;
+			set
+			{
+				if (_Opis == null || _Opis.Equals(value) == false)
+				{
+					_Opis = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
+
+		private DateTime _Data;
+		public DateTime Data
+		{
+			get => _Data;
+			set
+			{
+				if (_Data != value)
+				{
+					_Data = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
+
+		private long _IdO;
+		public long IdO
+		{
+			get => _IdO;
+			set
+			{
+				if (_IdO != value)
+				{
+					_IdO = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
+
+		private long _IdK;
+		public long IdK
+		{
+			get => _IdK;
+			set
+			{
+				if (_IdK != value)
+				{
+					_IdK = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
 
 		public IList<NameValuePair> NamedValues
 		{
@@ -38,7 +118,11 @@ namespace ISBD.Model
 		public string Table => "Transakcje";
 
 		public string IndexName => "IdT";
-		public long Index => IdT;
+		public long Index
+		{
+			get => IdT;
+			set => IdT = value;
+		}
 
 		public bool Init(SQLiteDataReader reader)
 		{

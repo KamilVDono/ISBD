@@ -8,7 +8,8 @@
         xmlns:dragablz="clr-namespace:Dragablz;assembly=Dragablz"
         xmlns:treeData="clr-namespace:ISBD.Model"
     xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
-        x:Class="ISBD.View.Pages.MainMenuPage"
+    xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    x:Class="ISBD.View.Pages.MainMenuPage"
       mc:Ignorable="d" 
       d:DesignHeight="1080" d:DesignWidth="1920"
       Title="MainMenuPage"
@@ -18,6 +19,7 @@
         <local:OsobaModel2NameConverter x:Key="osobaModel2NameConverter"/>
         <local:Double2Currency x:Key="double2Currency"/>
         <local:IdK2Category x:Key="idK2Category"/>
+        <local:IdK2Icon x:Key="idK2Icon"/>
         <local:Transaction2Color x:Key="transaction2Color"/>
         <local:Transaction2ColorForeground x:Key="transaction2ColorForeground"/>
         <local:RodzajIncome2Visibility x:Key="rodzajIncome2Visibility"/>
@@ -35,7 +37,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock Style="{DynamicResource TextBlockStyled}" Grid.Row="0" Grid.Column="0" Text="{Binding Name}"/>
                 <TextBlock Style="{DynamicResource TextBlockStyled}" Grid.Row="0" Grid.Column="1" Text="{Binding Amount}" HorizontalAlignment="Right" TextAlignment="Right"/>
-                <Image Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Source="{Binding Icon}" Visibility="Visible"/>
+                <Image Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Source="{Binding Ico}" Visibility="Visible"/>
                 <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="10" CornerRadius="1" Margin="10,5">
                     <Border.Background>
                         <LinearGradientBrush EndPoint="1,0.5" StartPoint="0,0.5">
@@ -68,7 +70,7 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <TextBlock Style="{DynamicResource TextBlockStyled}" Grid.Row="0" Grid.Column="1" Text="Główne menu" FontWeight="Medium" FontSize="34" Margin="30,5" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <TextBlock x:Name="MainText" Style="{DynamicResource TextBlockStyled}" Grid.Row="0" Grid.Column="1" Text="Główne menu" FontWeight="Medium" FontSize="34" Margin="30,5" TextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
             <Button x:Name="SettingsButton" Grid.Row="0" Grid.Column="2" Margin="5" Height="Auto" Background="{x:Null}" BorderBrush="{x:Null}">
                 <Viewbox Width="48" Height="48">
                     <Canvas Width="24" Height="24">
@@ -78,10 +80,10 @@
             </Button>
         </Grid>
 
-        <dragablz:TabablzControl Grid.Row="1" FixedHeaderCount="3">
+        <dragablz:TabablzControl Grid.Row="1" FixedHeaderCount="3" SelectionChanged="SelectedTab">
             <TabItem >
                 <TabItem.Header>
-                    <TextBlock FontFamily="Roboto" FontWeight="Black" FontSize="14" Text="Podumowanie"/>
+                    <TextBlock FontFamily="Roboto" FontWeight="Black" FontSize="18" Text="Podumowanie"/>
                 </TabItem.Header>
                 <Grid >
                     <Grid.ColumnDefinitions>
@@ -163,39 +165,25 @@
                     </materialDesign:Card>
 
                     <DataGrid x:Name="HistoryTable" Grid.Column="1" AutoGenerateColumns="False" SelectionMode="Single" 
-                        CommandManager.PreviewExecuted="DriversDataGrid_PreviewDeleteCommandHandler" Margin="2,2,2,65" CellEditEnding="HistoryTable_CellEditEnding">
+                        CommandManager.PreviewExecuted="DriversDataGrid_PreviewDeleteCommandHandler" Margin="2,2,2,60" FontSize="18">
                         <DataGrid.Columns>
-                            <!--<DataGridTemplateColumn Header="Data">
-                                --><!-- editing template --><!--
-                                <DataGridTemplateColumn.CellEditingTemplate>
-                                    <DataTemplate>
-                                        <DatePicker
-                                            SelectedDate="{Binding Data}"
-                                            BorderThickness="0">
-                                        </DatePicker>
-                                    </DataTemplate>
-                                </DataGridTemplateColumn.CellEditingTemplate>
-                                --><!-- standard template --><!--
+                            <DataGridTemplateColumn Header="Ikona"  Width="2*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <TextBlock >
-                                            <TextBlock.Text>
-                                                <Binding Path="Data"
-                                                         ConverterCulture="pl-PL"
-                                                         StringFormat="{}{0:d}"/>
-                                            </TextBlock.Text>
-                                        </TextBlock>
+                                        <Grid>
+                                            <Image Source="{Binding IdK, Converter={StaticResource idK2Icon}}"/>
+                                        </Grid>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
-                            </DataGridTemplateColumn>-->
-                            <DataGridTextColumn Header="Data" Width="*"  Binding="{Binding Path=Data, ConverterCulture=pl-PL}" />
+                            </DataGridTemplateColumn>
+                            <DataGridTextColumn Header="Data" Width="2*"  Binding="{Binding Path=Data, ConverterCulture=pl-PL}" />
                             <DataGridTextColumn Header="Tytuł" Width="2*" Binding="{Binding Tytul}"/>
                             <DataGridComboBoxColumn Header="Kategoria" x:Name="DataGridComboBoxColumn" Width="2*" SelectedValueBinding="{Binding IdK, Converter={StaticResource idK2Category}}"/>
                             <DataGridTemplateColumn Header="Typ"  Width="72">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Grid>
-                                            <Viewbox Width="30" Height="30" RenderTransformOrigin="0.5,0.5" Visibility="{Binding Path=Rodzaj, Converter={StaticResource rodzajExpense2Visibility}}">
+                                            <Viewbox Width="30" Height="30" RenderTransformOrigin="0.5,0.5" Visibility="{Binding Path=IdK, Converter={StaticResource rodzajExpense2Visibility}}">
                                                 <Viewbox.RenderTransform>
                                                     <TransformGroup>
                                                         <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
@@ -209,7 +197,7 @@
                                                     <Path Data="M3,4.27L4.28,3L21,19.72L19.73,21L16.06,17.33C15.44,18 14.54,18.55 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15H9C9,16.08 10.37,17 12,17C13.13,17 14.14,16.56 14.65,15.92L11.68,12.95C9.58,12.42 7,11.75 7,9C7,8.77 7,8.55 7.07,8.34L3,4.27M10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C11.63,7 11.28,7.05 10.95,7.13L9.4,5.58L10.5,5.18Z" Fill="Red" />
                                                 </Canvas>
                                             </Viewbox>
-                                            <Viewbox Width="30" Height="30" RenderTransformOrigin="0.5,0.5" Visibility="{Binding Path=Rodzaj, Converter={StaticResource rodzajIncome2Visibility}}">
+                                            <Viewbox Width="30" Height="30" RenderTransformOrigin="0.5,0.5" Visibility="{Binding Path=IdK, Converter={StaticResource rodzajIncome2Visibility}}">
                                                 <Viewbox.RenderTransform>
                                                     <TransformGroup>
                                                         <ScaleTransform ScaleX="0.8" ScaleY="0.8"/>
@@ -220,7 +208,7 @@
                                                 </Viewbox.RenderTransform>
                                                 <Canvas Width="24" Height="24">
                                                     <Ellipse Width="24" Height="24" Fill="{DynamicResource MaterialDesignCardBackground}" RenderTransformOrigin="-12, -12"/>
-                                                    <Path Data="M5.5,0H18.5A5.5,5.5 0 0,1 24,5.5V18.5A5.5,5.5 0 0,1 18.5,24H5.5A5.5,5.5 0 0,1 0,18.5V5.5A5.5,5.5 0 0,1 5.5,0M15.39,15.18C15.39,16.76 14.5,17.81 12.85,17.95V12.61C14.55,13.13 15.39,13.66 15.39,15.18M11.65,6V10.88C10.34,10.5 9.03,9.93 9.03,8.43C9.03,6.94 10.18,6.12 11.65,6M15.5,7.6L16.5,6.8C15.62,5.66 14.4,4.92 12.85,4.77V3.8H11.65V3.8L11.65,4.75C9.5,4.89 7.68,6.17 7.68,8.5C7.68,11 9.74,11.78 11.65,12.29V17.96C10.54,17.84 9.29,17.31 8.43,16.03L7.3,16.78C8.2,18.12 9.76,19 11.65,19.14V20.2H12.07L12.85,20.2V19.16C15.35,19 16.7,17.34 16.7,15.14C16.7,12.58 14.81,11.76 12.85,11.19V6.05C14,6.22 14.85,6.76 15.5,7.6Z" Fill="Red" />
+                                                    <Path Data="M7,15H9C9,16.08 10.37,17 12,17C13.63,17 15,16.08 15,15C15,13.9 13.96,13.5 11.76,12.97C9.64,12.44 7,11.78 7,9C7,7.21 8.47,5.69 10.5,5.18V3H13.5V5.18C15.53,5.69 17,7.21 17,9H15C15,7.92 13.63,7 12,7C10.37,7 9,7.92 9,9C9,10.1 10.04,10.5 12.24,11.03C14.36,11.56 17,12.22 17,15C17,16.79 15.53,18.31 13.5,18.82V21H10.5V18.82C8.47,18.31 7,16.79 7,15Z" Fill="Green" />
                                                 </Canvas>
                                             </Viewbox>
                                         </Grid>
@@ -231,16 +219,13 @@
                                 <DataGridTextColumn.ElementStyle>
                                     <Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MaterialDesignBody1TextBlock}">
                                         <Setter Property="HorizontalAlignment" Value="Right" />
+                                        <Setter Property="FontSize" Value="18" />
                                     </Style>
                                 </DataGridTextColumn.ElementStyle>
                             </DataGridTextColumn>
                             <DataGridTextColumn Header="Opis" Width="5*" Binding="{Binding Opis}" />
                         </DataGrid.Columns>
-                        <!--<DataGrid.RowDetailsTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Opis}" Margin="5" />
-                            </DataTemplate>
-                        </DataGrid.RowDetailsTemplate>-->
+
                         <DataGrid.RowStyle>
                             <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource MaterialDesignDataGridRow}">
                                 <Setter Property="Background" Value="{Binding Converter={StaticResource transaction2Color}}" />
@@ -248,14 +233,18 @@
                             </Style>
                         </DataGrid.RowStyle>
                     </DataGrid>
-                    <Button x:Name="AddTransaction" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,15,15" Height="38">
-                        <materialDesign:PackIcon Kind="Add"></materialDesign:PackIcon>
+                    <Button x:Name="AddTransaction" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,15,15" Height="62">
+                        <Viewbox Width="48" Height="48">
+                            <Canvas Width="24" Height="24">
+                                <Path Data="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M13,7H11V11H7V13H11V17H13V13H17V11H13V7Z" Fill="Black" />
+                            </Canvas>
+                        </Viewbox>
                     </Button>
                 </Grid>
             </TabItem>
             <TabItem>
                 <TabItem.Header>
-                    <TextBlock FontFamily="Roboto" FontWeight="Black" FontSize="14" Text="Statystyki"/>
+                    <TextBlock FontFamily="Roboto" FontWeight="Black" FontSize="18" Text="Statystyki"/>
                 </TabItem.Header>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -271,8 +260,21 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
                             <StackPanel Grid.Row="0">
-                                <DatePicker x:Name="FromChartDate" Text="Od" Margin="15,15,15,0" FirstDayOfWeek="Monday"/>
-                                <DatePicker x:Name="ToChartDate" Text="Do" Margin="15,15,15,0" FirstDayOfWeek="Monday"/>
+                                <TextBlock Text="Zakres dat" Style="{DynamicResource TextBlockStyled}" FontFamily="Robot" FontWeight="Medium" VerticalAlignment="Center"
+                                           HorizontalAlignment="Center" Margin="0,10,0,0" />
+                                <DockPanel Margin="15,5,15,0">
+                                    <TextBlock DockPanel.Dock="Left" Text="Od:" Style="{DynamicResource TextBlockStyled}" FontFamily="Robot" FontWeight="Medium" VerticalAlignment="Center"
+                                               HorizontalAlignment="Center" Margin="0,10,0,0" />
+                                    <DatePicker x:Name="FromChartDate" Text="Od" Margin="15,15,15,0" FirstDayOfWeek="Monday" Foreground="{DynamicResource PrimaryHueDarkBrush}"
+                                                FontSize="18"/>
+                                </DockPanel>
+                                <DockPanel Margin="15,5,15,0">
+                                    <TextBlock DockPanel.Dock="Left"  Text="Do:" Style="{DynamicResource TextBlockStyled}" FontFamily="Robot" FontWeight="Medium" VerticalAlignment="Center"
+                                               HorizontalAlignment="Center" Margin="0,10,0,0" />
+                                    <DatePicker x:Name="ToChartDate" Text="Do" Margin="15,15,15,0" FirstDayOfWeek="Monday" Foreground="{DynamicResource PrimaryHueDarkBrush}"
+                                                FontSize="18"/>
+                                </DockPanel>
+
                                 <Border Height="1" BorderThickness="0,1,0,0" BorderBrush="#FFFFEB3B" Margin="15,15" />
                             </StackPanel>
                             <StackPanel Grid.Row="1">
@@ -293,7 +295,7 @@
                             <StackPanel Grid.Row="2" Margin="0,10,0,0">
                                 <TextBlock Text="Wybierz użytkowników:" Style="{DynamicResource TextBlockStyled}" FontFamily="Robot" FontWeight="Medium" VerticalAlignment="Center"
                                            HorizontalAlignment="Center" Margin="0,15,0,0" />
-                                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="15,10,15,5">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="250">
                                     <TreeView x:Name="ChartUserTreeView">
                                         <TreeView.Resources>
                                             <HierarchicalDataTemplate DataType="{x:Type treeData:UserTreeData}" ItemsSource="{Binding Children}">
@@ -314,7 +316,7 @@
                             <StackPanel Grid.Row="3" Margin="0,10,0,5">
                                 <TextBlock Text="Wybierz kategorie:" Style="{DynamicResource TextBlockStyled}" FontFamily="Robot" FontWeight="Medium" VerticalAlignment="Center"
                                            HorizontalAlignment="Center" Margin="0,15,0,0" />
-                                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" MaxHeight="250">
                                     <TreeView x:Name="CategoriesSelectListView">
                                         <TreeView.Resources>
                                             <HierarchicalDataTemplate DataType="{x:Type treeData:CategoryTreeData}" ItemsSource="{Binding Children}">
@@ -343,9 +345,76 @@
             </TabItem>
             <TabItem>
                 <TabItem.Header>
-                    <TextBlock FontFamily="Roboto" FontWeight="Black" FontSize="14" Text="Operacje"/>
+                    <TextBlock FontFamily="Roboto" FontWeight="Black" FontSize="18" Text="Operacje"/>
                 </TabItem.Header>
-                <Grid />
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <materialDesign:Card Grid.Column="0" Margin="5" VerticalAlignment="Stretch">
+                        <DockPanel >
+                            <TextBlock DockPanel.Dock="Top" Style="{DynamicResource TextBlockStyled}" FontSize="22" HorizontalAlignment="Center" 
+                                       Margin="0,5" FontWeight="Medium">
+                                Kategorie
+                            </TextBlock>
+                            <Button Height="62" x:Name="AddCategoryButton" DockPanel.Dock="Bottom">
+                                <Viewbox Width="48" Height="48">
+                                    <Canvas Width="24" Height="24">
+                                        <Path Data="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M13,7H11V11H7V13H11V17H13V13H17V11H13V7Z" Fill="Black" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Button>
+                            <DataGrid x:Name="CategoriesDataGrid" AutoGenerateColumns="False" SelectionMode="Single">
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Nazwa" Width="*"  Binding="{Binding Path=Nazwa}" />
+                                    <DataGridTextColumn Header="Rodzaj" Width="2*" Binding="{Binding Rodzaj}"/>
+                                    <DataGridComboBoxColumn x:Name="CategoriesCategoriesDataGrid" Header="Rodzic" Width="2*" SelectedValueBinding="{Binding IdKRodzic, Converter={StaticResource idK2Category}}"/>
+                                    <DataGridTextColumn Header="Symbol" Width="5*" Binding="{Binding IdS}" />
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </DockPanel>
+                    </materialDesign:Card>
+
+                    <materialDesign:Card Grid.Column="1" Margin="5" VerticalAlignment="Stretch">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" Style="{DynamicResource TextBlockStyled}" FontSize="22" HorizontalAlignment="Center" 
+                                       Margin="0,5" FontWeight="Medium">
+                                Symbole
+                            </TextBlock>
+                            <Button Height="62" x:Name="AddSymbolButton" DockPanel.Dock="Bottom" >
+                                <Viewbox Width="48" Height="48">
+                                    <Canvas Width="24" Height="24">
+                                        <Path Data="M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M13,7H11V11H7V13H11V17H13V13H17V11H13V7Z" Fill="Black" />
+                                    </Canvas>
+                                </Viewbox>
+                            </Button>
+                            <DataGrid x:Name="SymbolsDataGrid" AutoGenerateColumns="False" SelectionMode="Single" BeginningEdit="SymbolDataGrid_BeginningEdit" >
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="ID" Width="*"  Binding="{Binding Path=IdS}" />
+                                    <DataGridTemplateColumn Header="Kolor"  Width="3*">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <xctk:ColorPicker SelectedColor="{Binding Kolor}"/>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                    <DataGridTemplateColumn Header="Ikona"  Width="4*">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Grid>
+                                                    <Image Source="{Binding Ikona}" Width="32" Height="32"></Image>
+                                                </Grid>
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </DockPanel>
+                    </materialDesign:Card>
+                </Grid>
             </TabItem>
         </dragablz:TabablzControl>
     </Grid>

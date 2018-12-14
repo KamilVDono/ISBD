@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
@@ -10,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Markup;
 using System.Windows.Media;
 using ISBD.Model;
 using ISBD.ModelView;
@@ -28,26 +30,36 @@ namespace ISBD.View.Pages
 	public partial class MainMenuPage : Page, IMainMenu
 	{
 		private Action<OsobaModel> OnSelectionChange;
-		private Action<AddingNewItemEventArgs> OnItemAdd;
-		private Action<HashSet<TransakcjaModel>> OnDelete;
-		private Action<TransakcjaModel> OnEdit;
 
 		public MainMenuPage()
 		{
 			InitializeComponent();
-			
+
+			this.Language = XmlLanguage.GetLanguage("pl-PL");
+
 			UsersViewsChooser.SelectionChanged += (sender, e) =>
 			{
 				OnSelectionChange?.Invoke((OsobaModel)UsersViewsChooser.SelectedItem);
 			};
 
-			HistoryTable.AddingNewItem += (sender, e) => { OnItemAdd?.Invoke(e); SortDataGrid(HistoryTable, 0, ListSortDirection.Descending); };
 			AddTransaction.Click += (_, _2) =>
 			{
-				OnItemAdd?.Invoke(new AddingNewItemEventArgs(){NewItem = new TransakcjaModel()});
-				SortDataGrid(HistoryTable, 0, ListSortDirection.Descending);
-			}; 
+				((ObservableTransactionsCollection)HistoryTable.ItemsSource).Add(new TransakcjaModel());
+			};
+
+			AddCategoryButton.Click += (_, _2) =>
+			{
+				((ObservableCategoriesCollection) CategoriesDataGrid.ItemsSource).Add(new KategoriaModel());
+			};
+
+			AddSymbolButton.Click += (_, _2) =>
+			{
+				((ObservableSymbolsCollection) SymbolsDataGrid.ItemsSource).Add(new SymbolModel());
+			};
+
 			HistoryTable.CanUserAddRows = false;
+			CategoriesDataGrid.CanUserAddRows = false;
+			SymbolsDataGrid.CanUserAddRows = false;
 		}
 
 		#region Callbacks
@@ -62,43 +74,23 @@ namespace ISBD.View.Pages
 			OnSelectionChange -= selectionAction;
 		}
 
-		public void RegisterForAddingNewItem(Action<AddingNewItemEventArgs> newItemAction)
-		{
-			OnItemAdd += newItemAction;
-		}
-
-		public void UnregisterForAddingNewItem(Action<AddingNewItemEventArgs> newItemAction)
-		{
-			OnItemAdd -= newItemAction;
-		}
-
-		public void RegisterForDeleteRows(Action<HashSet<TransakcjaModel>> deleteRowsAction)
-		{
-			OnDelete += deleteRowsAction;
-		}
-
-		public void UnregisterForDeleteRows(Action<HashSet<TransakcjaModel>> deleteRowsAction)
-		{
-			OnDelete -= deleteRowsAction;
-		}
-
-		public void RegisterForEdit(Action<TransakcjaModel> editAction)
-		{
-			OnEdit += editAction;
-		}
-
-		public void UnregisterForEdit(Action<TransakcjaModel> editAction)
-		{
-			OnEdit -= editAction;
-		}
-
 		#endregion Callbacks
 
 		#region Setters
 
-		public List<TransakcjaModel> Transactions
+		public ObservableTransactionsCollection Transactions
 		{
 			set => HistoryTable.ItemsSource = value;
+		}
+
+		public ObservableCategoriesCollection Categories
+		{
+			set => CategoriesDataGrid.ItemsSource = value;
+		}
+
+		public ObservableSymbolsCollection Symbols
+		{
+			set => SymbolsDataGrid.ItemsSource = value;
 		}
 
 		public List<OsobaModel> ValidUsers
@@ -110,9 +102,14 @@ namespace ISBD.View.Pages
 			}
 		}
 
-		public List<string> Categories
+		public List<string> CategoriesNames
 		{
-			set => DataGridComboBoxColumn.ItemsSource = value;
+			set
+			{
+				DataGridComboBoxColumn.ItemsSource = value;
+				value.Add("Brak");
+				CategoriesCategoriesDataGrid.ItemsSource = value;
+			}
 		}
 
 		public bool CanAdd { set => AddTransaction.IsEnabled = value; }
@@ -157,9 +154,13 @@ namespace ISBD.View.Pages
 
 		#endregion Setters
 
+		#region Getters
+
 		public Button PreviousMonthButton => PreviousMonth;
 
 		public Button NextMonthButton => NextMonth;
+
+		#endregion Getters
 
 		public void SetMonthSummary(string monthName, double income, double expense)
 		{
@@ -196,39 +197,50 @@ namespace ISBD.View.Pages
 		{
 			if (e.Command == DataGrid.DeleteCommand)
 			{
-				e.Handled = true;
 				if (MessageBox.Show("Na pewno chcesz usunąć daną transakcję?", "Potwierdz!", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
 				{
-					OnDelete?.Invoke( new HashSet<TransakcjaModel>(HistoryTable.SelectedCells.ToList().Select(cell => (TransakcjaModel)cell.Item)));
+					e.Handled = true;
 				}
 			}
 		}
 
-		public static void SortDataGrid(DataGrid dataGrid, int columnIndex = 0, ListSortDirection sortDirection = ListSortDirection.Ascending)
+		private void SelectedTab(object sender, SelectionChangedEventArgs e)
 		{
-			var column = dataGrid.Columns[columnIndex];
-
-			// Clear current sort descriptions
-			dataGrid.Items.SortDescriptions.Clear();
-
-			// Add the new sort description
-			dataGrid.Items.SortDescriptions.Add(new SortDescription(column.SortMemberPath, sortDirection));
-
-			// Apply sort
-			foreach (var col in dataGrid.Columns)
-			{
-				col.SortDirection = null;
-			}
-			column.SortDirection = sortDirection;
-
-			// Refresh items to display sort
-			dataGrid.Items.Refresh();
+			TabItem tab = (TabItem) ((Dragablz.TabablzControl) sender)?.SelectedItem;
+			MainText.Text = (tab?.Header as TextBlock)?.Text ?? "Główne menu";
 		}
 
-		private async void HistoryTable_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+		private void SymbolDataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
 		{
-			await Task.Delay(TimeSpan.FromSeconds(0.5));
-			OnEdit?.Invoke((TransakcjaModel)e.Row.Item);
+			if (((string) e.Column.Header).Equals("Ikona"))
+			{
+				Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+
+
+
+				// Set filter for file extension and default file extension 
+				dlg.DefaultExt = ".png";
+				dlg.Filter = "JPEG Files (*.jpeg)|*.jpeg|PNG Files (*.png)|*.png|JPG Files (*.jpg)|*.jpg|GIF Files (*.gif)|*.gif";
+
+
+				// Display OpenFileDialog by calling ShowDialog method 
+				bool? result = dlg.ShowDialog();
+
+
+				// Get the selected file name and display in a TextBox 
+				if (result == true)
+				{
+					// Open document 
+					string filename = dlg.FileName;
+					((SymbolModel)e.Row.Item).Ikona = filename;
+				}
+
+				e.EditingEventArgs.Handled = true;
+			}
+			else
+			{
+				e.EditingEventArgs.Handled = false;
+			}
 		}
 	}
 
@@ -275,6 +287,11 @@ namespace ISBD.View.Pages
 	{
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
+			if (value == null)
+			{
+				return "Brak";
+			}
+
 			Database.Database.Instance.Connect();
 
 			long idK = (long)value;
@@ -287,6 +304,11 @@ namespace ISBD.View.Pages
 
 		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
+			if ((string)value == "Brak")
+			{
+				return null;
+			}
+
 			Database.Database.Instance.Connect();
 
 			string categoryName = (string)value;
@@ -294,6 +316,27 @@ namespace ISBD.View.Pages
 
 			Database.Database.Instance.Dispose();
 			return category.IdK;
+		}
+	}
+
+	public class IdK2Icon : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+		{
+			Database.Database.Instance.Connect();
+
+			long idK = (long)value;
+			var category = Database.Database.Instance.SelectAll<KategoriaModel>().FirstOrDefault(cat => cat.IdK == idK);
+			var symbol = Database.Database.Instance.SelectAll<SymbolModel>().FirstOrDefault(sym => sym.IdS == category.IdS);
+
+			Database.Database.Instance.Dispose();
+
+			return symbol.Ikona;
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+		{
+			throw new NotImplementedException();
 		}
 	}
 
@@ -364,7 +407,14 @@ namespace ISBD.View.Pages
 	{
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			return (int) value == 1 ? Visibility.Visible : Visibility.Hidden;
+			Database.Database.Instance.Connect();
+
+			long idK = (long)value;
+			var category = Database.Database.Instance.SelectAll<KategoriaModel>().FirstOrDefault(cat => cat.IdK == idK);
+
+			Database.Database.Instance.Dispose();
+
+			return (category?.Rodzaj ?? 1) == 1 ? Visibility.Visible : Visibility.Hidden;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -377,7 +427,13 @@ namespace ISBD.View.Pages
 	{
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			return (int)value == -1 ? Visibility.Visible : Visibility.Hidden;
+			Database.Database.Instance.Connect();
+
+			long idK = (long)value;
+			var category = Database.Database.Instance.SelectAll<KategoriaModel>().FirstOrDefault(cat => cat.IdK == idK);
+
+			Database.Database.Instance.Dispose();
+			return (category?.Rodzaj ?? 1) == -1 ? Visibility.Visible : Visibility.Hidden;
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

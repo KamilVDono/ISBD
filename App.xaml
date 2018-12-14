@@ -26,6 +26,7 @@
             <Style x:Key="TextBlockStyled" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource MaterialDesignBody1TextBlock}" >
                 <Setter Property="Foreground" Value="{StaticResource PrimaryHueDarkBrush}" />
                 <Setter Property="FontFamily" Value="Roboto" />
+                <Setter Property="FontSize" Value="18" />
             </Style>
 
             <Style x:Key="DatePickerMy" TargetType="{x:Type DatePickerTextBox}" BasedOn="{StaticResource MaterialDesignDatePicker}">
