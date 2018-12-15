@@ -37,6 +37,8 @@ namespace ISBD.View.Pages
 
 			this.Language = XmlLanguage.GetLanguage("pl-PL");
 
+			KindsCategoriesDataGrid.ItemsSource = new[]{ "Wydatek", "Przychód"};
+
 			UsersViewsChooser.SelectionChanged += (sender, e) =>
 			{
 				OnSelectionChange?.Invoke((OsobaModel)UsersViewsChooser.SelectedItem);
@@ -146,9 +148,10 @@ namespace ISBD.View.Pages
 					value.SelectedType = StatsChartType.SelectedIndex;
 					value.OnDataChange(null,null);
 				};
-
+				
 				MainChart.Series = value.SeriesCollection;
-				//AxisYChart.Labels = value.Labels;
+				AxisX.LabelFormatter = val => new DateTime((long)val).ToString("dd.MM.yyyy");
+				AxisY.LabelFormatter = val => $"{val:F} PLN";
 			}
 		}
 
@@ -344,17 +347,22 @@ namespace ISBD.View.Pages
 	{
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			if (value is TransakcjaModel == false) return new SolidColorBrush(Colors.WhiteSmoke);
-			Database.Database.Instance.Connect();
-
-			TransakcjaModel tr = (TransakcjaModel)value;
-			long idK = tr.IdK;
-			var category = Database.Database.Instance.SelectAll<KategoriaModel>().FirstOrDefault(cat => cat.IdK == idK);
+			var category = value as KategoriaModel;
 			if (category == null)
 			{
+				if (value is TransakcjaModel == false) return new SolidColorBrush(Colors.WhiteSmoke);
+				Database.Database.Instance.Connect();
+
+				TransakcjaModel tr = (TransakcjaModel)value;
+				long idK = tr.IdK;
+				category = Database.Database.Instance.SelectAll<KategoriaModel>().FirstOrDefault(cat => cat.IdK == idK);
 				Database.Database.Instance.Dispose();
-				return new SolidColorBrush(Colors.WhiteSmoke);
+				if (category == null)
+				{
+					return new SolidColorBrush(Colors.WhiteSmoke);
+				}
 			}
+			Database.Database.Instance.Connect();
 			var symbol = Database.Database.Instance.SelectAll<SymbolModel>().FirstOrDefault(s => s.IdS == category.IdS);
 
 			Database.Database.Instance.Dispose();
@@ -374,19 +382,24 @@ namespace ISBD.View.Pages
 	{
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			if (value is TransakcjaModel == false) return new SolidColorBrush(Colors.Black);
-			Database.Database.Instance.Connect();
-
-			TransakcjaModel tr = (TransakcjaModel)value;
-			long idK = tr.IdK;
-			var category = Database.Database.Instance.SelectAll<KategoriaModel>().FirstOrDefault(cat => cat.IdK == idK);
+			var category = value as KategoriaModel;
 			if (category == null)
 			{
-				Database.Database.Instance.Dispose();
-				return new SolidColorBrush(Colors.Black);
-			}
-			var symbol = Database.Database.Instance.SelectAll<SymbolModel>().FirstOrDefault(s => s.IdS == category.IdS);
+				if (value is TransakcjaModel == false) return new SolidColorBrush(Colors.Black);
+				Database.Database.Instance.Connect();
 
+				TransakcjaModel tr = (TransakcjaModel) value;
+				long idK = tr.IdK;
+				category = Database.Database.Instance.SelectAll<KategoriaModel>()
+					.FirstOrDefault(cat => cat.IdK == idK);
+				Database.Database.Instance.Dispose();
+				if (category == null)
+				{
+					return new SolidColorBrush(Colors.Black);
+				}
+			}
+			Database.Database.Instance.Connect();
+			var symbol = Database.Database.Instance.SelectAll<SymbolModel>().FirstOrDefault(s => s.IdS == category.IdS);
 			Database.Database.Instance.Dispose();
 
 			if (symbol != null)
@@ -439,6 +452,19 @@ namespace ISBD.View.Pages
 		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
 			throw new NotImplementedException();
+		}
+	}
+
+	public class Rodzaj2Category : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+		{
+			return (int) value < 0 ? "Wydatek" : "Przychód";
+		}
+
+		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+		{
+			return ((string)value).Equals("Wydatek") ? -1 : 1;
 		}
 	}
 

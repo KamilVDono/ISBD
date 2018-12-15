@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -378,7 +379,13 @@ namespace ISBD.ModelView.State.UIStates
 
 			var allSymbols = Database.Database.Instance.SelectAll<SymbolModel>();
 
-			int days = (int)(CharParamsCache.ToDateTime - CharParamsCache.FromDateTime).TotalDays;
+			int days = ChartTypes[CharParamsCache.SelectedType].MaxXPoints();
+			int daysSpan = (int) (CharParamsCache.ToDateTime - CharParamsCache.FromDateTime).TotalDays;
+			if (daysSpan < days)
+			{
+				days = daysSpan;
+			}
+			int daysStep = (int)(CharParamsCache.ToDateTime - CharParamsCache.FromDateTime).TotalDays / days;
 			DateTime startDay = new DateTime(CharParamsCache.FromDateTime.Year, CharParamsCache.FromDateTime.Month,
 				CharParamsCache.FromDateTime.Day);
 
@@ -388,9 +395,9 @@ namespace ISBD.ModelView.State.UIStates
 			{
 				validTransactions.Add(new List<TransakcjaModel>());
 				validTransactions[i].AddRange(Database.Database.Instance.SelectAll<TransakcjaModel>().
-					Where(trans => trans.Data.Year == startDay.Year && trans.Data.Month == startDay.Month && trans.Data.Day == startDay.Day).
+					Where(trans => startDay <= trans.Data && (trans.Data - startDay).TotalDays < daysStep).
 					Where(trans => validUser.Any(user => user.IdO == trans.IdO)));
-				startDay = startDay.AddDays(1);
+				startDay = startDay.AddDays(daysStep);
 			}
 
 			Database.Database.Instance.Dispose();
@@ -406,20 +413,32 @@ namespace ISBD.ModelView.State.UIStates
 				var column = ChartTypes[CharParamsCache.SelectedType].GetChartSeries();
 				column.Title = category.Nazwa;
 				column.Values = new ChartValues<DateTimePoint>();
-				//column.Fill = new SolidColorBrush(allSymbols.First(s => s.IdS == category.IdS).Kolor);
 				column.Stroke = new SolidColorBrush(allSymbols.First(s => s.IdS == category.IdS).Kolor);
+				if (column.GetType() == typeof(StackedAreaSeries))
+				{
+					((StackedAreaSeries)column).LineSmoothness = 0;
+				}
+				else if (column.GetType() == typeof(LineSeries))
+				{
+					((LineSeries)column).LineSmoothness = 0;
+				}
+				if (column.GetType() == typeof(ColumnSeries))
+				{
+					column.Fill = new SolidColorBrush(allSymbols.First(s => s.IdS == category.IdS).Kolor);
+				}
 				column.DataLabels = true;
-				column.LabelPoint = (_) => category.Nazwa;
+				column.LabelPoint = (point) => $"{point.Y:F}zł {category.Nazwa}";
 
 				for (int i = 0; i < days; i++)
 				{
 					double sum = validTransactions[i].Where(trans => trans.IdK == category.IdK).Sum(t => t.Kwota);
 					column.Values.Add(new DateTimePoint(startDay, sum));
-					startDay = startDay.AddDays(1);
+					startDay = startDay.AddDays(daysStep);
 				}
 
 
 				CharParamsCache.SeriesCollection.Add(column);
+				CharParamsCache.Labels.Add(category.Nazwa);
 			});
 		}
 
@@ -481,7 +500,7 @@ namespace ISBD.ModelView.State.UIStates
 
 		public int MaxXPoints()
 		{
-			return -1;
+			return 4;
 		}
 
 		public bool Fill()

@@ -24,6 +24,7 @@
         <local:Transaction2ColorForeground x:Key="transaction2ColorForeground"/>
         <local:RodzajIncome2Visibility x:Key="rodzajIncome2Visibility"/>
         <local:RodzajExpense2Visibility x:Key="rodzajExpense2Visibility"/>
+        <local:Rodzaj2Category x:Key="rodzaj2Category"/>
         <DataTemplate x:Key="CategorySummaryItem">
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -36,7 +37,7 @@
                     <RowDefinition Height="18"/>
                 </Grid.RowDefinitions>
                 <TextBlock Style="{DynamicResource TextBlockStyled}" Grid.Row="0" Grid.Column="0" Text="{Binding Name}"/>
-                <TextBlock Style="{DynamicResource TextBlockStyled}" Grid.Row="0" Grid.Column="1" Text="{Binding Amount}" HorizontalAlignment="Right" TextAlignment="Right"/>
+                <TextBlock Style="{DynamicResource TextBlockStyled}" Grid.Row="0" Grid.Column="1" Text="{Binding Amount}" HorizontalAlignment="Right" TextAlignment="Right" Margin="0,0,5,0"/>
                 <Image Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Source="{Binding Ico}" Visibility="Visible"/>
                 <Border Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Height="10" CornerRadius="1" Margin="10,5">
                     <Border.Background>
@@ -167,11 +168,11 @@
                     <DataGrid x:Name="HistoryTable" Grid.Column="1" AutoGenerateColumns="False" SelectionMode="Single" 
                         CommandManager.PreviewExecuted="DriversDataGrid_PreviewDeleteCommandHandler" Margin="2,2,2,60" FontSize="18">
                         <DataGrid.Columns>
-                            <DataGridTemplateColumn Header="Ikona"  Width="2*">
+                            <DataGridTemplateColumn Header="Ikona"  Width="*">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Grid>
-                                            <Image Source="{Binding IdK, Converter={StaticResource idK2Icon}}"/>
+                                            <Image Source="{Binding IdK, Converter={StaticResource idK2Icon}}" MaxHeight="32"/>
                                         </Grid>
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
@@ -337,8 +338,14 @@
                         </Grid>
                     </materialDesign:Card>
 
-                    <Grid Grid.Column="1" Background="{DynamicResource MaterialDesignDarkBackground}" Margin="2" x:Name="ChartCanvas">
-                        <lvc:CartesianChart x:Name="MainChart" >
+                    <Grid Grid.Column="1" Background="Wheat" Margin="2" x:Name="ChartCanvas">
+                        <lvc:CartesianChart x:Name="MainChart" LegendLocation="Right" Margin="2">
+                            <lvc:CartesianChart.AxisX>
+                                <lvc:Axis Name="AxisX" Title="Data"></lvc:Axis>
+                            </lvc:CartesianChart.AxisX>
+                            <lvc:CartesianChart.AxisY>
+                                <lvc:Axis Name="AxisY" Title="Kwota" ShowLabels="True"></lvc:Axis>
+                            </lvc:CartesianChart.AxisY>
                         </lvc:CartesianChart>
                     </Grid>
                 </Grid>
@@ -365,13 +372,19 @@
                                     </Canvas>
                                 </Viewbox>
                             </Button>
-                            <DataGrid x:Name="CategoriesDataGrid" AutoGenerateColumns="False" SelectionMode="Single">
+                            <DataGrid x:Name="CategoriesDataGrid" AutoGenerateColumns="False" SelectionMode="Single" Foreground="{DynamicResource PrimaryHueDarkBrush}" FontSize="22">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="Nazwa" Width="*"  Binding="{Binding Path=Nazwa}" />
-                                    <DataGridTextColumn Header="Rodzaj" Width="2*" Binding="{Binding Rodzaj}"/>
+                                    <DataGridComboBoxColumn x:Name="KindsCategoriesDataGrid" Header="Rodzaj" Width="2*" SelectedValueBinding="{Binding Rodzaj, Converter={StaticResource rodzaj2Category}}"/>
                                     <DataGridComboBoxColumn x:Name="CategoriesCategoriesDataGrid" Header="Rodzic" Width="2*" SelectedValueBinding="{Binding IdKRodzic, Converter={StaticResource idK2Category}}"/>
                                     <DataGridTextColumn Header="Symbol" Width="5*" Binding="{Binding IdS}" />
                                 </DataGrid.Columns>
+                                <!--<DataGrid.RowStyle>
+                                    <Style TargetType="{x:Type DataGridRow}" BasedOn="{StaticResource MaterialDesignDataGridRow}">
+                                        <Setter Property="Background" Value="{Binding Converter={StaticResource transaction2Color}}" />
+                                        <Setter Property="Foreground" Value="{Binding Converter={StaticResource transaction2ColorForeground}}" />
+                                    </Style>
+                                </DataGrid.RowStyle>-->
                             </DataGrid>
                         </DockPanel>
                     </materialDesign:Card>
@@ -389,7 +402,8 @@
                                     </Canvas>
                                 </Viewbox>
                             </Button>
-                            <DataGrid x:Name="SymbolsDataGrid" AutoGenerateColumns="False" SelectionMode="Single" BeginningEdit="SymbolDataGrid_BeginningEdit" >
+                            <DataGrid x:Name="SymbolsDataGrid" AutoGenerateColumns="False" SelectionMode="Single" BeginningEdit="SymbolDataGrid_BeginningEdit" Foreground="{DynamicResource PrimaryHueDarkBrush}" 
+                                      FontSize="22">
                                 <DataGrid.Columns>
                                     <DataGridTextColumn Header="ID" Width="*"  Binding="{Binding Path=IdS}" />
                                     <DataGridTemplateColumn Header="Kolor"  Width="3*">
