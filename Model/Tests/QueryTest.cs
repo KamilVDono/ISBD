@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Media;
@@ -80,7 +81,7 @@ namespace ISBD.Model.Tests
 				new KategoriaModel(){IdS = 6, Nazwa = "Transport", Rodzaj = -1}, //10
 				new KategoriaModel(){IdS = 6, Nazwa = "Bilety", Rodzaj = -1, IdKRodzic = 10}, //11
 				new KategoriaModel(){IdS = 6, Nazwa = "Paliwo", Rodzaj = -1, IdKRodzic = 10}, //12
-				new KategoriaModel(){IdS = 1, Nazwa = "Ogólne", Rodzaj = -1}, //113
+				new KategoriaModel(){IdS = 1, Nazwa = "Ogólne", Rodzaj = -1}, //13
 			};
 
 			uprawnienia.ForEach(uprawnienie => Database.Database.Instance.Insert(uprawnienie));
@@ -90,7 +91,8 @@ namespace ISBD.Model.Tests
 		private void InsertTransakcje()
 		{
 			Database.Database.Instance.Connect();
-			List<TransakcjaModel> uprawnienia = new List<TransakcjaModel>()
+			List<TransakcjaModel> uprawnienia = TransakcjaModel.FromCSV(File.ReadAllText("Database\\test.txt"));
+			uprawnienia = uprawnienia ?? new List<TransakcjaModel>()
 			{
 				new TransakcjaModel(){Data = DateTime.Now, IdO = 1, IdK = 2, Kwota = 4500, Tytul = "Wypłata"},
 				new TransakcjaModel(){Data = DateTime.Now, IdO = 1, IdK = 3, Kwota = 500.50, Tytul = "Premia kwaetalna", Opis = "Premia kwartalna za świetne wyniki w firmie"},
@@ -102,6 +104,8 @@ namespace ISBD.Model.Tests
 				new TransakcjaModel(){Data = DateTime.Now, IdO = 4, IdK = 11, Kwota = 160, Tytul = "Bilet semestralny"},
 				new TransakcjaModel(){Data = DateTime.Now, IdO = 5, IdK = 9, Kwota = 12.50, Tytul = "Ciasteczka"}
 			};
+
+			
 
 			uprawnienia.ForEach(uprawnienie => Database.Database.Instance.Insert(uprawnienie));
 			Database.Database.Instance.Dispose();

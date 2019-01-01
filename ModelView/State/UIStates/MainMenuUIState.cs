@@ -37,9 +37,9 @@ namespace ISBD.ModelView.State.UIStates
 
 		private ChartType[] ChartTypes =
 		{
-			new ChartType("Liniowy", typeof(LineSeries)),
-			new ChartType("Kolumnowy", typeof(ColumnSeries)),
-			new ChartType("Sterta powierzchniowa", typeof(StackedAreaSeries)),
+			new ChartType("Liniowy", typeof(LineSeries), 4),
+			new ChartType("Kolumnowy", typeof(ColumnSeries), 1),
+			new ChartType("Sterta powierzchniowa", typeof(StackedAreaSeries), 4),
 		};
 
 		public override void StartState()
@@ -487,10 +487,13 @@ namespace ISBD.ModelView.State.UIStates
 		public string Name { get; set; }
 		public Type Type { get; set; }
 
-		public ChartType(string name, Type type)
+		private int MaxPoints;
+
+		public ChartType(string name, Type type, int maxPoints)
 		{
 			Name = name;
 			Type = type;
+			MaxPoints = maxPoints;
 		}
 
 		public Series GetChartSeries()
@@ -500,7 +503,7 @@ namespace ISBD.ModelView.State.UIStates
 
 		public int MaxXPoints()
 		{
-			return 4;
+			return MaxPoints;
 		}
 
 		public bool Fill()

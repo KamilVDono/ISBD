@@ -9,6 +9,36 @@ namespace ISBD.Model
 {
 	public class TransakcjaModel : ObservableModel, Database.IDBInsertable, IDBTableItem, IDBSelectable, IDBUpdateable
 	{
+		public static List<TransakcjaModel> FromCSV(string csv)
+		{
+			string[] lines = csv.Split('\n');
+			if (lines.Length < 1)
+			{
+				return null;
+			}
+
+			List<TransakcjaModel> transactions = new List<TransakcjaModel>(lines.Length);
+
+			foreach (string line in lines)
+			{
+				string[] splitted = line.Split(';');
+				if (splitted.Length != 3)
+				{
+					continue;
+				}
+
+				DateTime date = new DateTime(long.Parse(splitted[0]));
+				long idK = long.Parse(splitted[1]);
+				double amount = double.Parse(splitted[2]);
+
+				TransakcjaModel transaction = new TransakcjaModel()
+					{_Data = date, _IdK = idK, _IdO = 1, _Kwota = amount, _Tytul = "Tytuł", _Opis = ""};
+				transactions.Add(transaction);
+			}
+
+			return transactions;
+		}
+
 		public long IdT { get; set; }
 
 		private double _Kwota;
