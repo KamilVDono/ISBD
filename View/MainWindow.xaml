@@ -5,6 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ISBD"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Frame x:Name="Frame" NavigationUIVisibility="Hidden" />
+        Title="ISBD" Height="600" Width="1200" ResizeMode="CanResizeWithGrip" MinWidth="1200" MinHeight="600"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Background="{DynamicResource MaterialDesignPaper}"
+        FontFamily="pack://application:,,,/MaterialDesignThemes.Wpf;component/Resources/Roboto/#Roboto" WindowStartupLocation="CenterScreen" WindowState="Maximized"
+        >
+
+    <Grid>
+        <Frame x:Name="Frame" NavigationUIVisibility="Hidden"/>
+    </Grid>
+    
 </Window>

@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace ISBD.Database
 {
-	public interface IDBTableItem
+	public interface IDBUpdateable
 	{
-		string Table { get; }
-		long Index { get; set; }
+		string IndexName { get; }
 	}
 }

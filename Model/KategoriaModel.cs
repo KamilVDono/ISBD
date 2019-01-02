@@ -4,13 +4,65 @@ using ISBD.Database;
 
 namespace ISBD.Model
 {
-	public class KategoriaModel: Database.IDBInsertable, IDBTableItem, IDBSelectable
+	public class KategoriaModel: ObservableModel, Database.IDBInsertable, IDBTableItem, IDBSelectable, IDBUpdateable
 	{
 		public long IdK { get; set; }
-		public string Nazwa { get; set; }
-		public int Rodzaj { get; set; }
-		public long? IdKRodzic { get; set; }
-		public long IdS { get; set; }
+
+		private string _Nazwa;
+		public string Nazwa
+		{
+			get => _Nazwa;
+			set
+			{
+				if (_Nazwa == null || _Nazwa.Equals(value) == false)
+				{
+					_Nazwa = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
+
+		private int _Rodzaj;
+		public int Rodzaj
+		{
+			get => _Rodzaj;
+			set
+			{
+				if (_Rodzaj != value)
+				{
+					_Rodzaj = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
+
+		private long? _IdKRodzic;
+		public long? IdKRodzic
+		{
+			get => _IdKRodzic;
+			set
+			{
+				if (_IdKRodzic != value)
+				{
+					_IdKRodzic = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
+
+		private long _IdS;
+		public long IdS
+		{
+			get => _IdS;
+			set
+			{
+				if (_IdS != value)
+				{
+					_IdS = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
 
 		public IList<NameValuePair> NamedValues
 		{
@@ -30,6 +82,8 @@ namespace ISBD.Model
 			}
 		}
 		public string Table => "Kategorie";
+		public long Index { get => IdK; set => IdK = value; }
+
 		public bool Init(SQLiteDataReader reader)
 		{
 			if (reader.HasRows == false) return false;
@@ -62,5 +116,7 @@ namespace ISBD.Model
 		{
 			return $"IdK: {IdK} | Nazwa: {Nazwa} | Rodzaj: {Rodzaj} | IdKRodzic: {IdKRodzic} | IdS: {IdS}";
 		}
+
+		public string IndexName { get => "IdK"; }
 	}
 }

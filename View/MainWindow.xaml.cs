@@ -24,7 +24,6 @@ namespace ISBD
 			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
 			Instance = this;
-
 			var stateMachine = StateMachine.Instance;
 			stateMachine.InitStateMachine<StartupLogicState>();
 		}

@@ -1,19 +1,129 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data.SQLite;
+using System.Runtime.CompilerServices;
 using ISBD.Database;
 
 namespace ISBD.Model
 {
-	public class TransakcjaModel : Database.IDBInsertable, IDBTableItem, IDBSelectable
+	public class TransakcjaModel : ObservableModel, Database.IDBInsertable, IDBTableItem, IDBSelectable, IDBUpdateable
 	{
+		public static List<TransakcjaModel> FromCSV(string csv)
+		{
+			string[] lines = csv.Split('\n');
+			if (lines.Length < 1)
+			{
+				return null;
+			}
+
+			List<TransakcjaModel> transactions = new List<TransakcjaModel>(lines.Length);
+
+			foreach (string line in lines)
+			{
+				string[] splitted = line.Split(';');
+				if (splitted.Length != 3)
+				{
+					continue;
+				}
+
+				DateTime date = new DateTime(long.Parse(splitted[0]));
+				long idK = long.Parse(splitted[1]);
+				double amount = double.Parse(splitted[2]);
+
+				TransakcjaModel transaction = new TransakcjaModel()
+					{_Data = date, _IdK = idK, _IdO = 1, _Kwota = amount, _Tytul = "Tytuł", _Opis = ""};
+				transactions.Add(transaction);
+			}
+
+			return transactions;
+		}
+
 		public long IdT { get; set; }
-		public double Kwota { get; set; }
-		public string Tytul { get; set; }
-		public string Opis { get; set; }
-		public DateTime Data { get; set; }
-		public long IdO { get; set; }
-		public long IdK { get; set; }
+
+		private double _Kwota;
+		public double Kwota
+		{
+			get => _Kwota;
+			set
+			{
+				if (_Kwota != value)
+				{
+					_Kwota = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
+
+		private string _Tytul;
+		public string Tytul
+		{
+			get => _Tytul;
+			set
+			{
+				if (_Tytul == null || _Tytul.Equals(value) == false)
+				{
+					_Tytul = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
+
+		private string _Opis;
+		public string Opis
+		{
+			get => _Opis;
+			set
+			{
+				if (_Opis == null || _Opis.Equals(value) == false)
+				{
+					_Opis = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
+
+		private DateTime _Data;
+		public DateTime Data
+		{
+			get => _Data;
+			set
+			{
+				if (_Data != value)
+				{
+					_Data = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
+
+		private long _IdO;
+		public long IdO
+		{
+			get => _IdO;
+			set
+			{
+				if (_IdO != value)
+				{
+					_IdO = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
+
+		private long _IdK;
+		public long IdK
+		{
+			get => _IdK;
+			set
+			{
+				if (_IdK != value)
+				{
+					_IdK = value;
+					NotifyPropertyChanged();
+				}
+			}
+		}
 
 		public IList<NameValuePair> NamedValues
 		{
@@ -36,6 +146,14 @@ namespace ISBD.Model
 		}
 
 		public string Table => "Transakcje";
+
+		public string IndexName => "IdT";
+		public long Index
+		{
+			get => IdT;
+			set => IdT = value;
+		}
+
 		public bool Init(SQLiteDataReader reader)
 		{
 			if (reader.HasRows == false) return false;
@@ -44,7 +162,7 @@ namespace ISBD.Model
 			IdT = reader.GetInt64(0);
 			Kwota = reader.GetDouble(1);
 			Tytul = reader.GetString(2);
-			Opis = reader.GetString(3);
+			Opis = reader.IsDBNull(3) ? "" : reader.GetString(3);
 			Data = new DateTime(reader.GetInt64(4));
 			IdO = reader.GetInt64(5);
 			IdK = reader.GetInt64(6);

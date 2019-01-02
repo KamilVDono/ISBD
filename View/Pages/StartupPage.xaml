@@ -4,11 +4,24 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:ISBD.View"
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="StartupPage">
 
     <Grid>
-        <TextBlock x:Name="Txt" Text="Text1" FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"/>
+        <materialDesign:Card HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel>
+                <TextBlock Style="{DynamicResource TextBlockStyled}" x:Name="HelloMessage" Text="Witaj Tadeusz (Tadeoeoeo)" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="44" Margin="0,30,0,15"/>
+                <Button Style="{DynamicResource MaterialDesignRaisedDarkButton}" x:Name="GoButton" Content="Kontunuj (15)" Margin="220,25,220,15" Height="45"/>
+                <Button Style="{DynamicResource MaterialDesignFlatButton}" x:Name="NotMe" Content="Zmień konto" Margin="300,15"/>
+            </StackPanel>
+        </materialDesign:Card>
+        <StackPanel Background="Black" x:Name="Logo" Visibility="Collapsed">
+            <TextBlock Text="ISBD - Aplikacja do śledzenia wydatków i tworzenia " FontSize="28" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold"
+                   Foreground="AliceBlue" Margin="45"/>
+            <Image Source="/ISBD;component/Assets/Logo/Log.png" Stretch="Fill" />
+
+        </StackPanel>
     </Grid>
 </Page>

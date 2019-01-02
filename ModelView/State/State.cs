@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace ISBD.ModelView.State
 {
@@ -36,6 +37,7 @@ namespace ISBD.ModelView.State
 
 	public abstract class UIState : State
 	{
+		protected DispatcherTimer DispatcherTimer;
 		protected Page UIPage;
 		protected UIPushParameters Parameters;
 		protected virtual Type DefaultType { get; }
@@ -66,7 +68,11 @@ namespace ISBD.ModelView.State
 		}
 
 		public virtual void PauseState() { }
-		public virtual void ResumeState() { }
+
+		public virtual void ResumeState()
+		{
+			ShowPage();
+		}
 
 		protected void CreatePage()
 		{
@@ -93,6 +99,14 @@ namespace ISBD.ModelView.State
 		protected virtual void ShowPage()
 		{
 			MainWindow.Instance.Frame.NavigationService.Navigate(UIPage);
+		}
+
+		protected void DelayCall(Action function, int interval)
+		{
+			DispatcherTimer = new System.Windows.Threading.DispatcherTimer();
+			DispatcherTimer.Tick += (a, b) => function();
+			DispatcherTimer.Interval = new TimeSpan(0, 0, interval);
+			DispatcherTimer.Start();
 		}
 	}
 

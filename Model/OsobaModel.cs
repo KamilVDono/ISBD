@@ -32,6 +32,8 @@ namespace ISBD.Model
 			}
 		}
 		public string Table => "Osoby";
+		public long Index { get => IdO; set => IdO = value; }
+
 		public bool Init(SQLiteDataReader reader)
 		{
 			if (reader.HasRows == false) return false;

@@ -28,5 +28,10 @@ namespace ISBD.Utils
 
 			return color;
 		}
+
+		public static double SaturatedValue(this Color color)
+		{
+			return ((0.3 * color.R) + (0.59 * color.G) + (0.11 * color.B)) / 255.0;
+		}
 	}
 }

@@ -26,9 +26,18 @@ namespace ISBD.View
 			InitializeComponent();
 		}
 
-		public void SetText(string text)
+		public bool LogoVisible
 		{
-			Txt.Text = text;
+			set => Logo.Visibility = value ? Visibility.Visible : Visibility.Hidden;
+		}
+
+		public Button ContinueButton => GoButton; 
+
+		public Button NotMeButton => NotMe;
+
+		string IStartupUI.HelloMessage
+		{
+			set => HelloMessage.Text = value;
 		}
 	}
 }

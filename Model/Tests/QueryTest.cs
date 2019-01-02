@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Media;
@@ -39,6 +40,7 @@ namespace ISBD.Model.Tests
 				new UprawnienieModel {IdOBene = 2, IdOD = 3, Poziom = -1},
 				new UprawnienieModel {IdOBene = 3, IdOD = 5, Poziom = 1},
 				new UprawnienieModel {IdOBene = 4, IdOD = 5, Poziom = 1},
+				new UprawnienieModel {IdOBene = 1, IdOD = 5, Poziom = -1},
 			};
 
 			uprawnienia.ForEach(uprawnienie => Database.Database.Instance.Insert(uprawnienie));
@@ -48,17 +50,17 @@ namespace ISBD.Model.Tests
 		private void InsertSymbole()
 		{
 			Database.Database.Instance.Connect();
-			List<SymbolModel> uprawnienia = new List<SymbolModel>()
+			List<SymbolModel> symbole = new List<SymbolModel>()
 			{
-				new SymbolModel(){Kolor = Color.FromArgb(255, 255,255,255)}, //2
-				new SymbolModel(){Kolor = Color.FromArgb(255, 255,0,0)}, //3
+				new SymbolModel(){Kolor = Color.FromArgb(255, 69,169,255)}, //6
+				new SymbolModel(){Kolor = Color.FromArgb(255, 255, 0, 0)}, //2
+				new SymbolModel(){Kolor = Color.FromArgb(255, 255, 60, 255)}, //3
 				new SymbolModel(){Kolor = Color.FromArgb(255, 0, 0, 255)}, //4
 				new SymbolModel(){Kolor = Color.FromArgb(255, 0, 255,0)}, //5
 				new SymbolModel(){Kolor = Color.FromArgb(255, 255,255,0)}, //6
-
 			};
 
-			uprawnienia.ForEach(uprawnienie => Database.Database.Instance.Insert(uprawnienie));
+			symbole.ForEach(symbol => Database.Database.Instance.Insert(symbol));
 			Database.Database.Instance.Dispose();
 		}
 
@@ -79,7 +81,7 @@ namespace ISBD.Model.Tests
 				new KategoriaModel(){IdS = 6, Nazwa = "Transport", Rodzaj = -1}, //10
 				new KategoriaModel(){IdS = 6, Nazwa = "Bilety", Rodzaj = -1, IdKRodzic = 10}, //11
 				new KategoriaModel(){IdS = 6, Nazwa = "Paliwo", Rodzaj = -1, IdKRodzic = 10}, //12
-				new KategoriaModel(){IdS = 1, Nazwa = "Ogólne", Rodzaj = -1}, //113
+				new KategoriaModel(){IdS = 1, Nazwa = "Ogólne", Rodzaj = -1}, //13
 			};
 
 			uprawnienia.ForEach(uprawnienie => Database.Database.Instance.Insert(uprawnienie));
@@ -89,7 +91,8 @@ namespace ISBD.Model.Tests
 		private void InsertTransakcje()
 		{
 			Database.Database.Instance.Connect();
-			List<TransakcjaModel> uprawnienia = new List<TransakcjaModel>()
+			List<TransakcjaModel> uprawnienia = TransakcjaModel.FromCSV(File.ReadAllText("Database\\test.txt"));
+			uprawnienia = uprawnienia ?? new List<TransakcjaModel>()
 			{
 				new TransakcjaModel(){Data = DateTime.Now, IdO = 1, IdK = 2, Kwota = 4500, Tytul = "Wypłata"},
 				new TransakcjaModel(){Data = DateTime.Now, IdO = 1, IdK = 3, Kwota = 500.50, Tytul = "Premia kwaetalna", Opis = "Premia kwartalna za świetne wyniki w firmie"},
@@ -101,6 +104,8 @@ namespace ISBD.Model.Tests
 				new TransakcjaModel(){Data = DateTime.Now, IdO = 4, IdK = 11, Kwota = 160, Tytul = "Bilet semestralny"},
 				new TransakcjaModel(){Data = DateTime.Now, IdO = 5, IdK = 9, Kwota = 12.50, Tytul = "Ciasteczka"}
 			};
+
+			
 
 			uprawnienia.ForEach(uprawnienie => Database.Database.Instance.Insert(uprawnienie));
 			Database.Database.Instance.Dispose();
