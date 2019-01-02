@@ -346,6 +346,9 @@
                             <lvc:CartesianChart.AxisY>
                                 <lvc:Axis Name="AxisY" Title="Kwota" ShowLabels="True"></lvc:Axis>
                             </lvc:CartesianChart.AxisY>
+                            <lvc:CartesianChart.DataTooltip>
+                                <lvc:DefaultTooltip BulletSize="20" Background="Black" Foreground="White" FontSize="16" />
+                            </lvc:CartesianChart.DataTooltip>
                         </lvc:CartesianChart>
                     </Grid>
                 </Grid>
