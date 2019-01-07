@@ -71,6 +71,9 @@
     <Reference Include="System.Data.SQLite.Linq, Version=1.0.109.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
       <HintPath>packages\System.Data.SQLite.Linq.1.0.109.0\lib\net46\System.Data.SQLite.Linq.dll</HintPath>
     </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web" />
     <Reference Include="System.Windows.Controls.Input.Toolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>packages\WPFToolkit.3.5.50211.1\lib\System.Windows.Controls.Input.Toolkit.dll</HintPath>
@@ -128,11 +131,13 @@
     <Compile Include="ModelView\StateMachine.cs" />
     <Compile Include="ModelView\State\Connectors\ILoginUI.cs" />
     <Compile Include="ModelView\State\Connectors\IMainMenu.cs" />
+    <Compile Include="ModelView\State\Connectors\IRegisterUI.cs" />
     <Compile Include="ModelView\State\Connectors\IStartupUI.cs" />
     <Compile Include="ModelView\State\LogicStates\LoggedinLogicState.cs" />
     <Compile Include="ModelView\State\UIStates\LoginUIState.cs" />
     <Compile Include="ModelView\State\LogicStates\StartupLogicState.cs" />
     <Compile Include="ModelView\State\UIStates\MainMenuUIState.cs" />
+    <Compile Include="ModelView\State\UIStates\RegisterUIState.cs" />
     <Compile Include="ModelView\State\UIStates\StartupUIState.cs" />
     <Compile Include="ModelView\State\State.cs" />
     <Compile Include="Model\CategoryTreeData.cs" />
@@ -161,6 +166,9 @@
     <Compile Include="View\Pages\MainMenuPage.xaml.cs">
       <DependentUpon>MainMenuPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\Pages\RegisterPage.xaml.cs">
+      <DependentUpon>RegisterPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\Pages\StartupPage.xaml.cs">
       <DependentUpon>StartupPage.xaml</DependentUpon>
     </Compile>
@@ -173,6 +181,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\Pages\MainMenuPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\Pages\RegisterPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
