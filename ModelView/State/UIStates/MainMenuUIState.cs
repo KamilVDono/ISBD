@@ -396,6 +396,10 @@ namespace ISBD.ModelView.State.UIStates
 			{
 				days = daysSpan;
 			}
+			else if (CharParamsCache.SelectedType == 1)
+			{
+				days = 1;
+			}
 			int daysStep = (int)(CharParamsCache.ToDateTime - CharParamsCache.FromDateTime).TotalDays / days;
 			DateTime startDay = new DateTime(CharParamsCache.FromDateTime.Year, CharParamsCache.FromDateTime.Month,
 				CharParamsCache.FromDateTime.Day);
@@ -423,8 +427,9 @@ namespace ISBD.ModelView.State.UIStates
 
 				var column = ChartTypes[CharParamsCache.SelectedType].GetChartSeries();
 				column.Title = category.Nazwa;
-				column.Values = new ChartValues<DateTimePoint>();
+				column.Values = CharParamsCache.SelectedType != 1 ? (IChartValues)new ChartValues<DateTimePoint>() : (IChartValues)new ChartValues<double>();
 				column.Stroke = new SolidColorBrush(allSymbols.First(s => s.IdS == category.IdS).Kolor);
+				column.Foreground = Brushes.Black;
 				if (column.GetType() == typeof(StackedAreaSeries))
 				{
 					((StackedAreaSeries)column).LineSmoothness = 0;
@@ -443,7 +448,7 @@ namespace ISBD.ModelView.State.UIStates
 				for (int i = 0; i < days; i++)
 				{
 					double sum = validTransactions[i].Where(trans => trans.IdK == category.IdK).Sum(t => t.Kwota);
-					column.Values.Add(new DateTimePoint(startDay, sum));
+					column.Values.Add(CharParamsCache.SelectedType != 1 ? (object)new DateTimePoint(startDay, sum) : (object)sum);
 					startDay = startDay.AddDays(daysStep);
 				}
 
