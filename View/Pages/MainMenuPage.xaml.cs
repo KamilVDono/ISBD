@@ -163,9 +163,11 @@ namespace ISBD.View.Pages
 
 		public Button NextMonthButton => NextMonth;
 
-		#endregion Getters
+        public Button SettingsButton => Settings;
 
-		public void SetMonthSummary(string monthName, double income, double expense)
+        #endregion Getters
+
+        public void SetMonthSummary(string monthName, double income, double expense)
 		{
 			MonthName.Text = monthName;
 			IncomeText.Text = string.Format(CultureInfo.CurrentUICulture, "{0:C2}", income);

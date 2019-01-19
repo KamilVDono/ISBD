@@ -207,11 +207,11 @@ namespace ISBD.View.Pages
 
         private void RepeatPasswordBox_LostFocus(object sender, RoutedEventArgs e)
         {
-            if (Password != RepeatPassword)
+            if (Password != RepeatPassword )
             {
                 _Password(false, ErrorMessages[2]);
             }
-            else _Password(true, null);
+            else if(Password!=null)_Password(true, null);
         }
 
         private void SurnameBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -267,10 +267,13 @@ namespace ISBD.View.Pages
                     };
                     Database.Database.Instance.Insert(newUser);
                     var dbUser = Database.Database.Instance.SelectAll<OsobaModel>().FirstOrDefault(user => user.Login == newUser.Login);
-                    UprawnienieModel uprawnienie1 = new UprawnienieModel { IdOBene = dbUser.IdO, IdOD = dbUser.IdO, Poziom = 2 };
-                    UprawnienieModel uprawnienie2 = new UprawnienieModel { IdOBene = dbUser.IdO, IdOD = dbUser.IdO , Poziom = 3};
+                    UprawnienieModel uprawnienie1 = new UprawnienieModel { IdOBene = dbUser.IdO, IdOD = dbUser.IdO, Poziom = 1 };
+                    UprawnienieModel uprawnienie2 = new UprawnienieModel { IdOBene = dbUser.IdO, IdOD = dbUser.IdO , Poziom = 2};
+                    UprawnienieModel uprawnienie3 = new UprawnienieModel { IdOBene = dbUser.IdO, IdOD = dbUser.IdO, Poziom = 3 };
                     Database.Database.Instance.Insert(uprawnienie1);
                     Database.Database.Instance.Insert(uprawnienie2);
+                    Database.Database.Instance.Insert(uprawnienie3);
+                    Database.Database.Instance.Dispose();
 
                     StateMachine.Instance.PushState<LoggedinLogicState>(new LoggedinStatePushParameters()
                     {

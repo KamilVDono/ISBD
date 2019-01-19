@@ -75,6 +75,16 @@ namespace ISBD.Database
 			command.CommandText = $"UPDATE {updateable.Table} SET {GetUpdateSQL(updateable)} WHERE {updateable.IndexName} = {updateable.Index};";
 			command.ExecuteNonQuery();
 		}
+        public void Delete<T>(T deletable) where T:IDBTableItem , IDBUpdateable
+        {
+            if (deletable != null)
+            {
+                Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+                var command = _connection.CreateCommand();
+                command.CommandText = $"DELETE FROM {deletable.Table} WHERE {deletable.IndexName} = {deletable.Index};";
+                command.ExecuteNonQuery();
+            }
+        }
 
 		public (string login, string password) GetLastLoginData()
 		{

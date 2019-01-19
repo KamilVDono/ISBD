@@ -23,7 +23,7 @@
                 Margin="100 0 100 0">
                 <materialDesign:Card Grid.Column="1" VerticalAlignment="Center">
                     <StackPanel>
-                        <TextBlock Text="Zarejestruj się" FontSize="30" Foreground="DeepSkyBlue" Margin="0,0,0,0" TextAlignment="Center"></TextBlock>
+                        <TextBlock Text="Zarejestruj się" FontSize="30" Style="{DynamicResource TextBlockStyled}" Margin="0,0,0,0" TextAlignment="Center"></TextBlock>
                         <!--Login-->
                         <Label HorizontalContentAlignment="Center">Login</Label>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -75,7 +75,7 @@
               >
             <materialDesign:Card Grid.Column="1" VerticalAlignment="Center">
                 <StackPanel>
-                    <TextBlock Text="Poproś administratora" FontSize="26" Foreground="DeepSkyBlue" Margin="0,0,0,0" TextAlignment="Center"/>
+                    <TextBlock Text="Poproś administratora" FontSize="26" Style="{DynamicResource TextBlockStyled}" Margin="0,0,0,0" TextAlignment="Center"/>
                     <TextBlock Text="Do zakończenia procesu rejestracji poproś administratora o zalogowanie się" TextWrapping="WrapWithOverflow" Foreground ="White" TextAlignment="Center" Height="37"></TextBlock>
                     <!--Login-->
                     <Label Margin="0 30 0 0" HorizontalContentAlignment="Center" Content="Login"/>

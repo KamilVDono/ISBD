@@ -80,9 +80,20 @@ namespace ISBD.ModelView.State.UIStates
 
 			Connector.CanDelete = false;
 			Connector.CanEdit = true;
-		}
 
-		private void SetMonth()
+            Connector.SettingsButton.Click -= SettingsClick;
+            Connector.SettingsButton.Click += SettingsClick;
+
+            if (LoggedinLogicState.IsAdmin)
+                Connector.SettingsButton.Visibility = Visibility.Visible;
+            else Connector.SettingsButton.Visibility = Visibility.Hidden;
+        }
+        private void SettingsClick(object sender, RoutedEventArgs e)
+        {
+            if(LoggedinLogicState.IsAdmin)
+                StateMachine.Instance.PushState<AdminUIState>(null);
+        }
+            private void SetMonth()
 		{
 			var (month, income, expense) = GetCurrentMonthData();
 			Connector.SetMonthSummary(month, income, expense);

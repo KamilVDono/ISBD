@@ -39,5 +39,7 @@ namespace ISBD.ModelView.State
 		void SetMonthSummary(string monthName, double income, double expense);
 
 		void SetMonthList(List<CategorySummary> categories);
-	}
+
+        Button SettingsButton { get; }
+    }
 }
