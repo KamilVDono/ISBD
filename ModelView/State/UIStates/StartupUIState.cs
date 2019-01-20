@@ -60,7 +60,7 @@ namespace ISBD.ModelView.State
 				TicksCount = 0;
 				Connector.ContinueButton.Click -= LogIn;
 				Connector.ContinueButton.Click += LogIn;
-				Connector.ContinueButton.Content = $"Kontunuj ({ContinueTicks - TicksCount})";
+				Connector.ContinueButton.Content = $"Kontynuuj ({ContinueTicks - TicksCount})";
 				Connector.HelloMessage = $"Witaj {LastUser.Imie} {LastUser.Nazwisko} ({LastUser.Login})";
 				DelayCall(ContinueTick, 1);
 			}
