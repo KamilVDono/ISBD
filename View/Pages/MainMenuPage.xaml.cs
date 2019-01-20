@@ -186,10 +186,18 @@ namespace ISBD.View.Pages
 			else
 			{
 				double val = expense / (income);
-				double incomeVal = Math.Max(0, Math.Min(1, val - 0.01));
-				double expenseVal = Math.Max(0, Math.Min(1, val + 0.01));
-				IncomesSlider.Offset = incomeVal;
-				ExpensesSlider.Offset = expenseVal;
+				if (val > 0.999f)
+				{
+					IncomesSlider.Offset = 0.01f;
+					ExpensesSlider.Offset = 0.02f;
+				}
+				else
+				{
+					double incomeVal = Math.Max(0, Math.Min(1, val - 0.01));
+					double expenseVal = Math.Max(0, Math.Min(1, val + 0.01));
+					IncomesSlider.Offset = incomeVal;
+					ExpensesSlider.Offset = expenseVal;
+				}
 			}
 		}
 

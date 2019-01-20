@@ -22,7 +22,7 @@ namespace ISBD.Model
 			foreach (string line in lines)
 			{
 				string[] splitted = line.Split(';');
-				if (splitted.Length != 3)
+				if (splitted.Length != 4)
 				{
 					continue;
 				}
@@ -30,9 +30,10 @@ namespace ISBD.Model
 				DateTime date = new DateTime(long.Parse(splitted[0]));
 				long idK = long.Parse(splitted[1]);
 				double amount = double.Parse(splitted[2]);
+				long idO = long.Parse(splitted[3]);
 
 				TransakcjaModel transaction = new TransakcjaModel()
-					{_Data = date, _IdK = idK, _IdO = 1, _Kwota = amount, _Tytul = "Tytuł", _Opis = ""};
+					{_Data = date, _IdK = idK, _IdO = idO, _Kwota = amount, _Tytul = "Tytuł", _Opis = ""};
 				transactions.Add(transaction);
 			}
 
