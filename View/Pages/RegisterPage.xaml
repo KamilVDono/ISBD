@@ -1,0 +1,109 @@
+﻿<Page x:Class="ISBD.View.Pages.RegisterPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      xmlns:local="clr-namespace:ISBD.View.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="Page1">
+
+    <Grid RenderTransformOrigin="0.50,0.50">
+
+        <StackPanel
+          Name = "RegisterBlock"
+          VerticalAlignment="Center"
+          HorizontalAlignment="Center"
+          TextBlock.TextAlignment="Left">
+            <Border 
+                CornerRadius="15"
+                Padding="15 15 15 15"
+                Width="400"
+                Margin="100 0 100 0">
+                <materialDesign:Card Grid.Column="1" VerticalAlignment="Center">
+                    <StackPanel>
+                        <TextBlock Text="Zarejestruj się" FontSize="30" Style="{DynamicResource TextBlockStyled}" Margin="0,0,0,0" TextAlignment="Center"></TextBlock>
+                        <!--Login-->
+                        <Label HorizontalContentAlignment="Center">Login</Label>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox x:Name="LoginBox" Width="300" HorizontalAlignment="Left" Margin="16,0,0,0" LostFocus="LoginBox_LostFocus" TextChanged="LoginBox_TextChanged" Foreground="White"/>
+                            <Image Width="16" Height="16" x:Name="LoginError" Stretch="UniformToFill"></Image>
+                        </StackPanel>
+                        <!--Password-->
+                        <Label x:Name="LoginErrorText" Visibility="Collapsed" Foreground="Red">Login pusty</Label>
+                        <Label HorizontalContentAlignment="Center">Hasło</Label>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <PasswordBox x:Name = "PasswordBox" Width="300" PasswordChar="●" HorizontalAlignment="Center" Margin="16,0,0,0" LostFocus="PasswordBox_LostFocus" Foreground="White" />
+                            <Image x:Name="PasswordError" Width="16" Height="16"/>
+                        </StackPanel>
+                        <!--Repeat password-->
+
+                        <Label x:Name="PasswordErrorText" Visibility="Collapsed" Foreground="Red">Login pusty</Label>
+                        <Label HorizontalContentAlignment="Center">Powtórz Hasło</Label>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <PasswordBox x:Name = "RepeatPasswordBox" PasswordChar="●" Width="300" Margin="16,0,0,0" LostFocus="RepeatPasswordBox_LostFocus" Foreground="White"></PasswordBox>
+                            <Image x:Name="RepeatPasswordError" Width="16" Height="16"></Image>
+                        </StackPanel>
+                        <Label x:Name="RepeatPasswordErrorText" Visibility="Collapsed" Foreground="Red">Login pusty</Label>
+                        <Label HorizontalContentAlignment="Center" Height="26">Imię</Label>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox x:Name="NameBox" Width="300" Margin="16,0,0,0" TextChanged="NameBox_TextChanged" LostFocus="NameBox_LostFocus" Foreground="White"></TextBox>
+                            <Image Width="16" Height="16" x:Name="NameError"></Image>
+                        </StackPanel>
+                        <Label x:Name="NameErrorText"  Visibility="Collapsed" Foreground="Red">Login pusty</Label>
+                        <Label HorizontalContentAlignment="Center">Nazwisko</Label>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBox x:Name="SurnameBox" Width="300" Margin="16,0,0,0" LostFocus="SurnameBox_LostFocus" TextChanged="SurnameBox_TextChanged" Foreground="White"></TextBox>
+                            <Image Width="16" Height="16" x:Name="SurnameError"></Image>
+                        </StackPanel>
+                        <Label x:Name="SurnameErrorText"  Visibility="Collapsed" Foreground="Red">Login pusty</Label>
+                        <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Height="30">
+                            <Button x:Name="ButtonBack" HorizontalAlignment="Left" Width="100" Margin="0,0,170,0">Wróć</Button>
+                            <Button x:Name="ButtonNext" Content="Dalej" HorizontalAlignment="Right" Width="100" Click="ButtonNext_Click">
+                            </Button>
+                        </StackPanel>
+                    </StackPanel>
+                </materialDesign:Card>
+            </Border>
+        </StackPanel>
+        <Border Name = "AdminLogin"
+            CornerRadius="15"
+            Padding="15 15 15 15"
+            Width="300" 
+            Visibility="Hidden"
+              >
+            <materialDesign:Card Grid.Column="1" VerticalAlignment="Center">
+                <StackPanel>
+                    <TextBlock Text="Poproś administratora" FontSize="26" Style="{DynamicResource TextBlockStyled}" Margin="0,0,0,0" TextAlignment="Center"/>
+                    <TextBlock Text="Do zakończenia procesu rejestracji poproś administratora o zalogowanie się" TextWrapping="WrapWithOverflow" Foreground ="White" TextAlignment="Center" Height="37"></TextBlock>
+                    <!--Login-->
+                    <Label Margin="0 30 0 0" HorizontalContentAlignment="Center" Content="Login"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <TextBox x:Name="LoginBox1" Width="250" HorizontalAlignment="Left" Margin="16,0,0,0" LostFocus="LoginBox_LostFocus" TextChanged="LoginBox_TextChanged" Foreground="White"/>
+                        <Image Width="16" Height="16" x:Name="LoginError1" Stretch="UniformToFill"/>
+                    </StackPanel>
+                    <!--Password-->
+                    <Label x:Name="LoginErrorText1" Visibility="Collapsed" Foreground="Red" Content="Login pusty"/>
+                    <Label HorizontalContentAlignment="Center" Content="Hasło"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                        <PasswordBox x:Name = "PasswordBox1" Width="250" PasswordChar="●" HorizontalAlignment="Center" Margin="16,0,0,0" LostFocus="PasswordBox_LostFocus" Foreground="White" />
+                        <Image x:Name="PasswordError1" Width="16" Height="16"/>
+                    </StackPanel>
+                    <!--Repeat password-->
+
+                    <Label x:Name="PasswordErrorText1" Visibility="Collapsed" Foreground="Red" Content="Login pusty"/>
+                
+                    <Label x:Name="RepeatPasswordErrorText1" Visibility="Collapsed" Foreground="Red" Content="Login pusty"/>
+                    <Label x:Name="NameErrorText1"  Visibility="Collapsed" Foreground="Red" Content="Login pusty"/>
+                   
+                    <Label x:Name="SurnameErrorText1" Visibility="Hidden" Foreground="Red" Content="Zły login lub hasło." HorizontalAlignment="Center"/>
+                    <StackPanel Orientation="Horizontal" Margin="0,20,0,0" Height="30">
+                        <Button x:Name="ButtonBack1" HorizontalAlignment="Left" Width="100" Margin="0,0,70,0" Content="Wróć" Click="ButtonBack1_Click"/>
+                        <Button x:Name="ButtonNext1" Content="Dalej" HorizontalAlignment="Right" Width="100" Click="ButtonNext1_Click"/>
+                    </StackPanel>
+                </StackPanel>
+            </materialDesign:Card>
+        </Border>
+    </Grid>
+</Page>

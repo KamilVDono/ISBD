@@ -8,7 +8,7 @@ using ISBD.Database;
 
 namespace ISBD.Model
 {
-	public class UprawnienieModel : Database.IDBInsertable, IDBTableItem, IDBSelectable
+	public class UprawnienieModel : Database.IDBInsertable, IDBTableItem, IDBSelectable , IDBUpdateable
 	{
 		public const int FULL_BAN = -2;
 		public const int WRITE_BAN = -1;
@@ -42,7 +42,9 @@ namespace ISBD.Model
 		public string Table => "Uprawnienia";
 		public long Index { get => IdU; set => IdU = value; }
 
-		public bool Init(SQLiteDataReader reader)
+        public string IndexName => "IdU";
+
+        public bool Init(SQLiteDataReader reader)
 		{
 			if (reader.HasRows == false) return false;
 			if (reader.FieldCount != 4) return false;

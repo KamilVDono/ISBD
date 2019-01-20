@@ -3,6 +3,7 @@ using System.Linq;
 using System.Windows;
 using ISBD.Model;
 using ISBD.ModelView.State.LogicStates;
+using ISBD.ModelView.State.UIStates;
 using ISBD.Utils;
 using ISBD.View;
 
@@ -36,9 +37,8 @@ namespace ISBD.ModelView.State
 
 		private void Register(object sender, RoutedEventArgs e)
 		{
-			//TODO: Implement registration
-			throw new System.NotImplementedException("Implement Registration");
-		}
+             StateMachine.Instance.PushState<RegisterUIState>(null);
+        }
 
 		private void Login(object sender, RoutedEventArgs e)
 		{
@@ -54,8 +54,6 @@ namespace ISBD.ModelView.State
 			}
 			else
 			{
-				//TODO: Implement wrong Login-Password set
-				//throw new System.NotImplementedException("Implement wrong Login-Password set");
 				Connector.Message = "Wrong login or password";
 			}
 		}
